@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
+
     <android.support.v4.widget.SlidingPaneLayout
         android:id="@+id/slidepanel"
         android:layout_width="match_parent"
@@ -22,6 +23,9 @@
         </LinearLayout>
 
 <!--主界面-->
+<!--<com.markmao.pulltorefresh.ui.XScrollViewActivity-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content" >-->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -38,19 +42,39 @@
                 android:textSize="24sp"
                 android:background="#ff007fff"/>
 <!--广告区-->
-                <android.support.v4.view.ViewPager
-                    android:id="@+id/vp_ad"
-                    android:layout_width="match_parent"
-                    android:layout_height="123dp"/>
+            <ImageView
+                android:id="@+id/iv_temp"
+                android:layout_width="match_parent"
+                android:layout_height="222dp"
+                android:layout_below="@id/tv_title"
+                android:scaleType="fitXY"
+                android:src="@mipmap/ad"/>
+            <ImageView
+                android:id="@+id/iv_ad"
+                android:layout_width="match_parent"
+                android:layout_height="222dp"
+                android:layout_below="@id/tv_title"
+                android:scaleType="fitXY"
+                android:src="@mipmap/ad"/>
+            <Button
+                android:id="@+id/b_next_ad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="83dp"
+                android:layout_marginLeft="593px"
+                android:layout_below="@id/tv_title"
+                android:background="@mipmap/ic_launcher"/>
 <!--教学列表-->
             <ListView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:divider="#11000579"
                 android:dividerHeight="3dp"
                 android:id="@+id/lv_list"
-                android:layout_below="@+id/vp_ad"/>
+                android:layout_below="@+id/iv_ad"/>
         </RelativeLayout>
+<!--</com.markmao.pulltorefresh.ui.XScrollViewActivity>-->
+
     </android.support.v4.widget.SlidingPaneLayout>
 
 </LinearLayout>

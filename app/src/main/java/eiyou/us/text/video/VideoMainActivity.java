@@ -77,6 +77,11 @@ public class VideoMainActivity extends Activity implements OnClickListener {
 		Intent intent=getIntent();
 		videoUrl=intent.getExtras().getString("videoUrl");
 
+		videoAction();
+
+	}
+
+	private void videoAction() {
 		volumnController = new VolumnController(this);
 		mVideo = (FullScreenVideoView) findViewById(R.id.videoview);
 		mPlayTime = (TextView) findViewById(R.id.play_time);

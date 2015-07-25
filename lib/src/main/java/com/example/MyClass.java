@@ -17,7 +17,11 @@ class Point<T>{
 }
 public class MyClass {
     public static void main(String[] args) throws IOException {
-        Double i=IO.i();
-        IO.o(i+"");
+        IO.o(""+0%4);
+        IO.o(""+1%4);
+        IO.o(""+2%4);
+        IO.o(""+3%4);
+        IO.o(""+4%4);
+        IO.o(""+5%4);
     }
 }

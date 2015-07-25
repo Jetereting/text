@@ -3,6 +3,7 @@ package eiyou.us.text.image;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.util.LruCache;
 import android.widget.ImageView;
 import java.io.BufferedInputStream;
@@ -66,9 +67,14 @@ public class ImageLoader {
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             super.onPostExecute(bitmap);
-            if (imageView.getTag().equals(url)) {
+            try {
+                if (imageView.getTag().equals(url)) {
+                    imageView.setImageBitmap(bitmap);
+                }
+            }catch (Exception e){
                 imageView.setImageBitmap(bitmap);
             }
+
         }
     }
 
@@ -85,6 +91,7 @@ public class ImageLoader {
             return bitmap;
         }catch (Exception e){
             e.printStackTrace();
+            Log.d("w","wrong   of    get   bitmap    from      url ");
         }finally {
             try {
                 is.close();
