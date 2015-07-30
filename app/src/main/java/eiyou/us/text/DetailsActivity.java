@@ -3,18 +3,12 @@ package eiyou.us.text;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -22,9 +16,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.VideoView;
 
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,10 +26,9 @@ import java.util.TimerTask;
 import eiyou.us.text.video.DensityUtil;
 import eiyou.us.text.video.FullScreenVideoView;
 import eiyou.us.text.video.LightnessController;
-import eiyou.us.text.video.VideoMainActivity;
 import eiyou.us.text.video.VolumnController;
 
-public class DetailsActivity extends Activity implements View.OnClickListener {
+public class DetailsActivity extends Activity implements View.OnClickListener ,MediaPlayer.OnInfoListener, MediaPlayer.OnBufferingUpdateListener {
 
     // 自定义VideoView
     private FullScreenVideoView mVideo;
@@ -51,7 +42,7 @@ public class DetailsActivity extends Activity implements View.OnClickListener {
     private SeekBar mSeekBar;
     private ImageView mPlay;
     private TextView mPlayTime;
-    private TextView mDurationTime;
+    private TextView mDurationTime,loadRateView;
 
     // 音频管理器
     private AudioManager mAudioManager;
@@ -63,7 +54,7 @@ public class DetailsActivity extends Activity implements View.OnClickListener {
     // 视频播放时间
     private int playTime;
 
-    private String videoUrl="http://www.ydtsystem.com/CardImage/21/video/20140305/20140305124807_37734.mp4";
+    private String videoUrl="http://7o50kb.com2.z0.glb.qiniucdn.com/kuaisu1.mp4";
     // 自动隐藏顶部和底部View的时间
     private static final int HIDE_TIME = 5000;
 
@@ -76,7 +67,7 @@ public class DetailsActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.news_details);
+        setContentView(R.layout.activity_news_details);
         videoAction();
     }
     private void videoAction() {
@@ -86,6 +77,7 @@ public class DetailsActivity extends Activity implements View.OnClickListener {
         mDurationTime = (TextView) findViewById(R.id.total_time);
         mPlay = (ImageView) findViewById(R.id.play_btn);
         mSeekBar = (SeekBar) findViewById(R.id.seekbar);
+        loadRateView=(TextView)findViewById(R.id.tv_loadRateView);
         mTopView = findViewById(R.id.top_layout);
         mBottomView = findViewById(R.id.bottom_layout);
 
@@ -430,6 +422,32 @@ public class DetailsActivity extends Activity implements View.OnClickListener {
             mHandler.removeCallbacks(hideRunnable);
             mHandler.postDelayed(hideRunnable, HIDE_TIME);
         }
+    }
+
+    @Override
+    public void onBufferingUpdate(MediaPlayer mp, int percent) {
+        loadRateView.setText(percent + "%");
+    }
+
+    @Override
+    public boolean onInfo(MediaPlayer mp, int what, int extra) {
+        switch (what) {
+            case MediaPlayer.MEDIA_INFO_BUFFERING_START:
+                //开始缓存，暂停播放
+                if (mVideo.isPlaying()) {
+                    mVideo.pause();
+                    loadRateView.setText("");
+                    loadRateView.setVisibility(View.VISIBLE);
+                }
+                break;
+            case MediaPlayer.MEDIA_INFO_BUFFERING_END:
+                //缓存完成，继续播放
+
+                mVideo.start();
+                loadRateView.setVisibility(View.GONE);
+                break;
+        }
+        return true;
     }
 
     private class AnimationImp implements Animation.AnimationListener {

@@ -7,11 +7,11 @@ import java.io.InputStreamReader;
 /**
  * Created by Au on 16-Jul-15.
  */
-//输入输出类
+//input and output class
 public class IO {
     /**
-     * 从键盘输入一个东西
-     * @return 返回输入内容
+     * put something with keyboard
+     * @return
      * @throws IOException
      */
     public static <T>T i() throws IOException {
@@ -30,7 +30,7 @@ public class IO {
     }
 
     /**
-     * 输出
+     * output
      * @param s
      */
     public static void o(String s){

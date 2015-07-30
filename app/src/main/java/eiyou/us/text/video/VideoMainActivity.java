@@ -71,7 +71,7 @@ public class VideoMainActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.video_activity_main);
+		setContentView(R.layout.activity_full_video_main);
 
 		//上个页面来的视频播放地址
 		Intent intent=getIntent();

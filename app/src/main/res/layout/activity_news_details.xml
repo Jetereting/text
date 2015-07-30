@@ -6,7 +6,7 @@
 <!--视频-->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="345dp"
+        android:layout_height="277dp"
         android:background="@android:color/black" >
 
         <eiyou.us.text.video.FullScreenVideoView
@@ -37,6 +37,14 @@
                     android:textColor="@android:color/white"
                     android:textSize="18sp" />
             </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_loadRateView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#ffffff"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true" />
         </RelativeLayout>
 
         <RelativeLayout

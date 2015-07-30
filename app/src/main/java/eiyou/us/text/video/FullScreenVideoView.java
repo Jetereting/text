@@ -6,6 +6,7 @@ import android.widget.VideoView;
 
 /**
  * 自动全屏的VideoView
+ *
  */
 public class FullScreenVideoView extends VideoView {
 

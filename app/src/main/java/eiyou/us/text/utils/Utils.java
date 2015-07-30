@@ -3,6 +3,9 @@ package eiyou.us.text.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.widget.Toast;
+
+import cn.bmob.v3.listener.SaveListener;
 
 /**
  * Created by Au on 24-Jul-15.
@@ -20,6 +23,12 @@ public class Utils {
             return openTimes.getInt(key, value);
         }
 
+    }
+    public static class toast{
+        public static void show(Context context, String message)
+        {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        }
     }
 }
 
