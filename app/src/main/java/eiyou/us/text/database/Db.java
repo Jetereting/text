@@ -14,7 +14,11 @@ public class Db extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table [list](\"+\"[_id] integer primary key AUTOINCREMENT,\"+\"[pic] binary,\"+\"[title] text,\"+\"[content] text);");
+        db.execSQL("create table [list](\"+\"" +
+                "[_id] integer primary key AUTOINCREMENT,\"+\"" +
+                "[pic] binary,\"+\"" +
+                "[title] text,\"+\"" +
+                "[content] text);");
     }
 
     @Override

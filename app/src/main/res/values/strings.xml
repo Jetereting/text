@@ -26,5 +26,6 @@
     <string name="footer_hint_load_ready">Release to load more</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_register">RegisterActivity</string>
+    <string name="title_activity_user_info">UserInfoActivity</string>
 
 </resources>

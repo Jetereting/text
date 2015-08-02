@@ -1,29 +1,16 @@
 package eiyou.us.text;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.util.LruCache;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.net.URL;
@@ -32,23 +19,22 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobUser;
 import eiyou.us.text.database.Db;
 import eiyou.us.text.image.ImageLoader;
 import eiyou.us.text.pullToRefresh.RefreshableView;
 import eiyou.us.text.utils.Utils;
-import eiyou.us.text.video.VideoMainActivity;
 
 public class MainActivity extends Activity {
     private ImageView adImageView,tempImageView,userAvatarImageView;
-    private Button nextAdButton;
+    private Button nextAdButton,userButton;
     private ImageLoader imageLoader;
     private RefreshableView refreshableView;
     private ListView listView;
     private String URL="http://eiyou.us/mooc/list_json.txt";
     private String videoUrl;
+    //数据库
     Db db;
     SQLiteDatabase dbwrite,dbread;
     @Override
@@ -74,7 +60,7 @@ public class MainActivity extends Activity {
     }
 
     private void event() {
-        userAvatarImageView.setOnClickListener(new View.OnClickListener() {
+        userButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(),LoginActivity.class));
@@ -197,6 +183,7 @@ public class MainActivity extends Activity {
         return result;
     }
     private void init() {
+        userButton=(Button)findViewById(R.id.b_user);
         listView=(ListView)findViewById(R.id.lv_list);
         adImageView=(ImageView)findViewById(R.id.iv_ad);
         nextAdButton=(Button)findViewById(R.id.b_next_ad);
@@ -205,6 +192,6 @@ public class MainActivity extends Activity {
         userAvatarImageView=(ImageView)findViewById(R.id.iv_user_avatar);
         Bmob.initialize(this, "b683205e58831f338c406aa5ef6a5fe3");
         db=new Db(this);
-        dbwrite=db.getWritableDatabase();
+//        dbwrite=db.getWritableDatabase();
     }
 }

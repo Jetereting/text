@@ -1,6 +1,7 @@
 package eiyou.us.text;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,7 +17,7 @@ import eiyou.us.text.utils.Utils;
 
 public class RegisterActivity extends Activity {
     EditText userNameEditText,userPasswordEditText,userPasswordAgainEditText;
-    String userName="asdf",userPassword="23",userPasswordAgain="23";
+    String userName,userPassword,userPasswordAgain;
     Button registerButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +33,7 @@ public class RegisterActivity extends Activity {
             public void onClick(View v) {
                 getStringFromEditText();
                 if(userPassword.equals(userPasswordAgain)){
-                    signUp(userName,userPassword);
+                    signUp(userName, userPassword);
                 }else {
                     Utils.toast.show(getApplicationContext(),"两次密码输入不一致哦");
                 }
@@ -54,7 +55,7 @@ public class RegisterActivity extends Activity {
         final MyUser myUser = new MyUser();
         myUser.setUsername(userName);
         myUser.setPassword(userPassword);
-        myUser.setAge(18);
+        myUser.setJob("移动开发人员");
         myUser.signUp(this, new SaveListener() {
 
             @Override
@@ -63,6 +64,8 @@ public class RegisterActivity extends Activity {
                 Utils.toast.show(getApplicationContext(),"注册成功:" + myUser.getUsername() + "-"
                         + myUser.getObjectId() + "-" + myUser.getCreatedAt()
                         + "-" + myUser.getSessionToken() + ",是否验证：" + myUser.getEmailVerified());
+
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             }
 
             @Override

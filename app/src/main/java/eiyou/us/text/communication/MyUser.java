@@ -10,13 +10,23 @@ public class MyUser extends BmobUser {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private Integer age;
+	private String sign;
 
-	public Integer getAge() {
-		return age;
+	public String getJob() {
+		return job;
 	}
 
-	public void setAge(Integer age) {
-		this.age = age;
+	public void setJob(String job) {
+		this.job = job;
 	}
+
+	public String getSign() {
+		return sign;
+	}
+
+	public void setSign(String sign) {
+		this.sign = sign;
+	}
+
+	private String job;
 }

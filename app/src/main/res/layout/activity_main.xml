@@ -8,24 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <!--侧滑界面-->
-        <LinearLayout
-            android:layout_width="110dp"
-            android:layout_height="match_parent"
-            android:background="#ff38ff6a"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/iv_user_avatar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/abc_btn_rating_star_off_mtrl_alpha" />
-            </LinearLayout>
-        </LinearLayout>
+        <include
+            layout="@layout/activity_main_sliding" />
 
         <!--主界面-->
 
@@ -63,12 +47,14 @@
 
             <Button
                 android:id="@+id/b_next_ad"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tv_title"
-                android:layout_marginLeft="593px"
-                android:layout_marginTop="83dp"
-                android:background="@mipmap/ic_launcher" />
+                android:layout_width="30dp"
+                android:layout_height="66dp"
+                android:background="@drawable/right_arrow"
+                android:layout_below="@+id/tv_title"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="80dp" />
+
             <!--教学列表-->
             <eiyou.us.text.pullToRefresh.RefreshableView
                 android:layout_width="wrap_content"

@@ -1,0 +1,86 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#40c5ff">
+        <!-- user information-->
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true">
+
+
+            <ImageView
+                android:id="@+id/iv_user_avatar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="12dp"
+                android:src="@drawable/abc_ratingbar_full_material" />
+
+            <TextView
+                android:id="@+id/tv_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="12dp"
+                android:layout_toRightOf="@id/iv_user_avatar"
+                android:text="jetereting"
+                android:textColor="#03005e"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/tv_user_job"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_user_name"
+                android:layout_toRightOf="@id/iv_user_avatar"
+                android:text="移动开发人员"
+                android:textColor="#03005e"/>
+            <Button
+                android:id="@+id/b_user"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/my_learn"
+                android:layout_alignRight="@+id/tv_user_name"
+                android:layout_alignEnd="@+id/tv_user_name"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:background="#00ffffff"
+                android:layout_alignParentTop="true" />
+
+
+            <TextView
+                android:id="@+id/my_learn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/iv_user_avatar"
+                android:paddingTop="23dp"
+                android:text="  我的课程"
+                android:textColor="#03005e"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/downloaded"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/my_learn"
+                android:paddingTop="23dp"
+                android:text="  离线缓存"
+                android:textColor="#03005e"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/about_us"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/downloaded"
+                android:paddingTop="23dp"
+                android:text="  关于我们"
+                android:textColor="#03005e"
+                android:textSize="24sp" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+</LinearLayout>

@@ -19,13 +19,12 @@ public class LoginActivity extends Activity {
     EditText userNameEditText,userPasswordEditText;
     String usrName,userPassword;
     Button loginButton;
-    TextView forgetPsdTextView,newUserTextView;
+    TextView forgetPsdTextView,newUserTextView,backTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         init();
-        getStringFromEditText();
         event();
     }
 
@@ -33,7 +32,8 @@ public class LoginActivity extends Activity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                login(usrName,userPassword);
+                getStringFromEditText();
+                login(usrName, userPassword);
             }
         });
         forgetPsdTextView.setOnClickListener(new View.OnClickListener() {
@@ -46,6 +46,12 @@ public class LoginActivity extends Activity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(),RegisterActivity.class));
+            }
+        });
+        backTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(),MainActivity.class));
             }
         });
     }
@@ -68,6 +74,7 @@ public class LoginActivity extends Activity {
             public void onSuccess() {
                 // TODO Auto-generated method stub
                 Utils.toast.show(getApplicationContext(),bu2.getUsername() + "登陆成功");
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
 
             @Override
@@ -83,5 +90,6 @@ public class LoginActivity extends Activity {
         loginButton=(Button)findViewById(R.id.b_login);
         forgetPsdTextView=(TextView)findViewById(R.id.tv_forget_psd);
         newUserTextView=(TextView)findViewById(R.id.tv_new_user);
+        backTextView=(TextView)findViewById(R.id.tv_back);
     }
 }
