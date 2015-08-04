@@ -60,14 +60,20 @@
             android:text="00:00"
             android:textColor="@android:color/white"
             android:textSize="14sp" />
+        <ImageView
+        android:id="@+id/iv_no_fullscreen"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/fullscreen_to_windown_normal"/>
 
         <TextView
             android:id="@+id/total_time"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
+            android:layout_toLeftOf="@id/iv_no_fullscreen"
             android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
             android:gravity="center_vertical"
             android:text="00:00"
             android:textColor="@android:color/white"

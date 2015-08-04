@@ -1,4 +1,4 @@
-package eiyou.us.text;
+package eiyou.us.text.news;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import eiyou.us.text.R;
 import eiyou.us.text.image.ImageLoader;
 
 /**
@@ -45,7 +46,7 @@ public class NewsAdapter extends BaseAdapter {
         ViewHolder viewHolder=null;
         if(convertView==null){
             viewHolder=new ViewHolder();
-            convertView=inflater.inflate(R.layout.item_layout,null);
+            convertView=inflater.inflate(R.layout.main_item_layout,null);
             viewHolder.ivIcon=(ImageView)convertView.findViewById(R.id.iv_icon);
             viewHolder.tvTitle=(TextView)convertView.findViewById(R.id.tv_title);
             viewHolder.tvContent=(TextView)convertView.findViewById(R.id.tv_content);

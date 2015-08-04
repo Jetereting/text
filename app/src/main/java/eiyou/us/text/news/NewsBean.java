@@ -1,4 +1,4 @@
-package eiyou.us.text;
+package eiyou.us.text.news;
 
 /**
  * Created by Au on 22-Jul-15.

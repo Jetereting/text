@@ -30,6 +30,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
+import eiyou.us.text.DetailsActivity;
 import eiyou.us.text.R;
 
 public class VideoMainActivity extends Activity implements OnClickListener {
@@ -44,7 +45,7 @@ public class VideoMainActivity extends Activity implements OnClickListener {
 	private View mBottomView;
 	// 视频播放拖动条
 	private SeekBar mSeekBar;
-	private ImageView mPlay;
+	private ImageView mPlay,noFullscreenImageView;
 	private TextView mPlayTime;
 	private TextView mDurationTime;
 
@@ -58,7 +59,7 @@ public class VideoMainActivity extends Activity implements OnClickListener {
 	// 视频播放时间
 	private int playTime;
 
-	private String videoUrl;
+	private String videoUrl="http://7o50kb.com2.z0.glb.qiniucdn.com/kuaisu1.mp4";
 	// 自动隐藏顶部和底部View的时间
 	private static final int HIDE_TIME = 5000;
 
@@ -72,13 +73,26 @@ public class VideoMainActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_full_video_main);
-
+		init();
 		//上个页面来的视频播放地址
-		Intent intent=getIntent();
-		videoUrl=intent.getExtras().getString("videoUrl");
-
+//		Intent intent=getIntent();
+//		videoUrl=intent.getExtras().getString("videoUrl");
+		event();
 		videoAction();
 
+	}
+
+	private void event() {
+		noFullscreenImageView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				startActivity(new Intent(getApplicationContext(), DetailsActivity.class));
+			}
+		});
+	}
+
+	private void init() {
+		noFullscreenImageView=(ImageView)findViewById(R.id.iv_no_fullscreen);
 	}
 
 	private void videoAction() {

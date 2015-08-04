@@ -3,46 +3,67 @@ package eiyou.us.text;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import cn.bmob.v3.BmobQuery;
+import eiyou.us.text.communication.CommentAdapter;
+import eiyou.us.text.communication.CommentBean;
 import eiyou.us.text.video.DensityUtil;
 import eiyou.us.text.video.FullScreenVideoView;
 import eiyou.us.text.video.LightnessController;
+import eiyou.us.text.video.VideoMainActivity;
 import eiyou.us.text.video.VolumnController;
 
-public class DetailsActivity extends Activity implements View.OnClickListener ,MediaPlayer.OnInfoListener, MediaPlayer.OnBufferingUpdateListener {
+public class DetailsActivity extends Activity implements View.OnClickListener, MediaPlayer.OnInfoListener, MediaPlayer.OnBufferingUpdateListener {
 
+    private ListView commentListView;
     // 自定义VideoView
     private FullScreenVideoView mVideo;
 
     // 头部View
     private View mTopView;
+    //按后退键返回键回主菜单
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+            return true;
+        }
+        return false;
+
+    }
 
     // 底部View
     private View mBottomView;
     // 视频播放拖动条
     private SeekBar mSeekBar;
-    private ImageView mPlay;
+    private ImageView mPlay, fullscreenImageView;
     private TextView mPlayTime;
-    private TextView mDurationTime,loadRateView;
+    private TextView mDurationTime, loadRateView;
 
     // 音频管理器
     private AudioManager mAudioManager;
@@ -54,7 +75,7 @@ public class DetailsActivity extends Activity implements View.OnClickListener ,M
     // 视频播放时间
     private int playTime;
 
-    private String videoUrl="http://7o50kb.com2.z0.glb.qiniucdn.com/kuaisu1.mp4";
+    private String videoUrl = "http://7o50kb.com2.z0.glb.qiniucdn.com/kuaisu1.mp4";
     // 自动隐藏顶部和底部View的时间
     private static final int HIDE_TIME = 5000;
 
@@ -63,13 +84,33 @@ public class DetailsActivity extends Activity implements View.OnClickListener ,M
 
     // 原始屏幕亮度
     private int orginalLight;
+    //bmob
+    BmobQuery<CommentBean> query;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_details);
+        init();
         videoAction();
+        event();
     }
+
+    private void event() {
+        fullscreenImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), VideoMainActivity.class));
+            }
+        });
+        new CommentAsyncTask().execute(query);
+    }
+
+    private void init() {
+        fullscreenImageView = (ImageView) findViewById(R.id.iv_fullscreen);
+        commentListView=(ListView)findViewById(R.id.lv_comment);
+    }
+
     private void videoAction() {
         volumnController = new VolumnController(this);
         mVideo = (FullScreenVideoView) findViewById(R.id.videoview);
@@ -77,7 +118,7 @@ public class DetailsActivity extends Activity implements View.OnClickListener ,M
         mDurationTime = (TextView) findViewById(R.id.total_time);
         mPlay = (ImageView) findViewById(R.id.play_btn);
         mSeekBar = (SeekBar) findViewById(R.id.seekbar);
-        loadRateView=(TextView)findViewById(R.id.tv_loadRateView);
+        loadRateView = (TextView) findViewById(R.id.tv_loadRateView);
         mTopView = findViewById(R.id.top_layout);
         mBottomView = findViewById(R.id.bottom_layout);
 
@@ -465,5 +506,29 @@ public class DetailsActivity extends Activity implements View.OnClickListener ,M
         public void onAnimationStart(Animation animation) {
         }
 
+    }
+    class CommentAsyncTask extends AsyncTask<BmobQuery<CommentBean>,Void,List<CommentBean>>{
+
+        @Override
+        protected List<CommentBean> doInBackground(BmobQuery<CommentBean>... params) {
+            return getComment(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(List<CommentBean> commentBeanList) {
+            CommentAdapter commentAdapter=new CommentAdapter(getApplicationContext(),commentBeanList);
+            commentListView.setAdapter(commentAdapter);
+        }
+
+        private List<CommentBean> getComment(BmobQuery<CommentBean> query) {
+            List<CommentBean> commentBeanList=new ArrayList<>();
+            CommentBean commentBean=new CommentBean(R.drawable.user_avatar,"jeoook","蟹壳！","12:34");
+
+            query=new BmobQuery<>();
+            for(int i=0;i<10;i++) {
+                commentBeanList.add(commentBean);
+            }
+            return commentBeanList;
+        }
     }
 }

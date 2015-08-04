@@ -47,13 +47,13 @@
 
             <Button
                 android:id="@+id/b_next_ad"
-                android:layout_width="30dp"
-                android:layout_height="66dp"
-                android:background="@drawable/right_arrow"
+                android:layout_width="50dp"
+                android:layout_height="117dp"
+                android:background="@drawable/right_arrow1"
                 android:layout_below="@+id/tv_title"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="5dp"
-                android:layout_marginTop="80dp" />
+                android:layout_marginTop="63dp" />
 
             <!--教学列表-->
             <eiyou.us.text.pullToRefresh.RefreshableView
