@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="223dp"
+    android:layout_width="300dp"
     android:layout_height="match_parent">
 
     <RelativeLayout
@@ -8,26 +9,28 @@
         android:background="@drawable/slide_back">
         <!-- user information-->
         <RelativeLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/id"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true">
 
-
             <ImageView
                 android:id="@+id/iv_user_avatar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:paddingTop="12dp"
-                android:src="@drawable/abc_ratingbar_full_material" />
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/user_avatar" />
 
             <TextView
                 android:id="@+id/tv_user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="12dp"
+                android:layout_marginLeft="10dp"
                 android:layout_toRightOf="@id/iv_user_avatar"
+                android:paddingTop="12dp"
                 android:text="jetereting"
-                android:textColor="#03005e"
+                android:textColor="#ffffffff"
                 android:textSize="22sp" />
 
             <TextView
@@ -35,52 +38,162 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_user_name"
+                android:layout_marginLeft="10dp"
                 android:layout_toRightOf="@id/iv_user_avatar"
                 android:text="移动开发人员"
-                android:textColor="#03005e"/>
+                android:textColor="#ffffffff"
+
+                />
+
             <Button
                 android:id="@+id/b_user"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/my_learn"
-                android:layout_alignRight="@+id/tv_user_name"
-                android:layout_alignEnd="@+id/tv_user_name"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
                 android:background="#00ffffff"
-                android:layout_alignParentTop="true" />
+                android:layout_alignBottom="@+id/tv_user_job"
+                android:layout_alignRight="@+id/tv_user_name"
+                android:layout_alignEnd="@+id/tv_user_name" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_marginTop="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_below="@+id/id"
+            android:id="@+id/id1"
+            android:paddingLeft="45dp"
+            >
 
+            <TextView
+                android:id="@+id/my1"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/home" />
+
+            <TextView
+
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/my1"
+                android:layout_toRightOf="@+id/my1"
+                android:gravity="center_vertical"
+                android:text="  我的学校"
+                android:textColor="#ffffffff"
+                android:textSize="20dp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_below="@+id/id1"
+            android:id="@+id/idd"
+            android:paddingLeft="45dp"
+            >
+
+            <TextView
+                android:id="@+id/my"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/sliding_mycourse" />
 
             <TextView
                 android:id="@+id/my_learn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/iv_user_avatar"
-                android:paddingTop="23dp"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/my"
+                android:layout_toRightOf="@+id/my"
+                android:gravity="center_vertical"
                 android:text="  我的课程"
-                android:textColor="#03005e"
-                android:textSize="24sp" />
+                android:textColor="#ffffffff"
+                android:textSize="20dp" />
 
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:id="@+id/iddd"
+            android:layout_below="@+id/idd"
+            android:paddingLeft="45dp"
+            android:layout_centerHorizontal="true">
+            <TextView
+                android:id="@+id/mybook"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/sliding_allcourse_normal" />
             <TextView
                 android:id="@+id/downloaded"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/my_learn"
-                android:paddingTop="23dp"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/mybook"
+                android:layout_toRightOf="@+id/mybook"
                 android:text="  离线缓存"
-                android:textColor="#03005e"
-                android:textSize="24sp" />
-
+                android:gravity="center_vertical"
+                android:textColor="#ffffffff"
+                android:textSize="20sp" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:id="@+id/idddd"
+            android:layout_below="@+id/iddd"
+            android:paddingLeft="45dp"
+            android:layout_centerHorizontal="true">
+            <TextView
+                android:id="@+id/myself"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/select_expression_pressed" />
             <TextView
                 android:id="@+id/about_us"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/downloaded"
-                android:paddingTop="23dp"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/myself"
+                android:layout_toRightOf="@+id/myself"
                 android:text="  关于我们"
-                android:textColor="#03005e"
-                android:textSize="24sp" />
-
+                android:gravity="center_vertical"
+                android:textColor="#ffffffff"
+                android:textSize="20sp" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:id="@+id/iddddd"
+            android:layout_below="@+id/idddd"
+            android:paddingLeft="45dp"
+            android:layout_centerHorizontal="true">
+            <TextView
+                android:id="@+id/sit"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/sliding_setting_icon_normal" />
+            <TextView
+                android:id="@+id/siting"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/sit"
+                android:layout_toRightOf="@+id/sit"
+                android:text="  设置"
+                android:gravity="center_vertical"
+                android:textColor="#ffffffff"
+                android:textSize="20sp" />
         </RelativeLayout>
     </RelativeLayout>
 </LinearLayout>

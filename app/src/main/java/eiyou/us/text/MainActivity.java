@@ -2,17 +2,22 @@ package eiyou.us.text;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,7 +33,6 @@ import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobUser;
 import eiyou.us.text.database.Db;
 import eiyou.us.text.image.ImageLoader;
-import eiyou.us.text.news.NewsAdapter;
 import eiyou.us.text.news.NewsBean;
 import eiyou.us.text.pullToRefresh.RefreshableView;
 import eiyou.us.text.utils.Utils;
@@ -41,6 +45,7 @@ public class MainActivity extends Activity {
     private ListView listView;
     private String URL = "http://eiyou.us/mooc/list_json.txt";
     private String videoUrl;
+    private String videoName;
     BmobUser bmobUser;
     //数据库
     Db db;
@@ -149,12 +154,6 @@ public class MainActivity extends Activity {
 
             NewsAdapter adapter = new NewsAdapter(getApplicationContext(), newsBeans);
             listView.setAdapter(adapter);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    startActivity(new Intent(getApplicationContext(), DetailsActivity.class).putExtra("videoUrl", videoUrl));
-                }
-            });
         }
     }
 
@@ -173,7 +172,7 @@ public class MainActivity extends Activity {
                 newsBean.newsIconUrl = jsonObject.getString("picSmall");
                 newsBean.newsTitle = jsonObject.getString("title");
                 newsBean.newsContent = jsonObject.getString("content");
-                videoUrl = newsBean.videoUrl = jsonObject.getString("video");
+                newsBean.videoUrl = jsonObject.getString("video");
                 newsBeanList.add(newsBean);
             }
         } catch (Exception e) {
@@ -221,7 +220,7 @@ public class MainActivity extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // 点击“确认”后的操作
-                        MainActivity.this.finish();
+                        System.exit(0);
                     }
                 })
                 .setNegativeButton("返回", new DialogInterface.OnClickListener() {
@@ -231,6 +230,70 @@ public class MainActivity extends Activity {
                     }
                 }).show();
         // super.onBackPressed();
+    }
+    public class NewsAdapter extends BaseAdapter {
+        private List<NewsBean> list;
+        private LayoutInflater inflater;
+        private ImageLoader imageLoader;
+
+        public NewsAdapter(Context context,List<NewsBean> data){
+            list=data;
+            inflater=LayoutInflater.from(context);
+            imageLoader=new ImageLoader();
+        }
+        @Override
+        public int getCount() {
+            return list.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return list.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder viewHolder=null;
+            if(convertView==null){
+                viewHolder=new ViewHolder();
+                convertView=inflater.inflate(R.layout.main_item_layout,null);
+                viewHolder.ivIcon=(ImageView)convertView.findViewById(R.id.iv_icon);
+                viewHolder.tvTitle=(TextView)convertView.findViewById(R.id.tv_title);
+                viewHolder.tvContent=(TextView)convertView.findViewById(R.id.tv_content);
+                viewHolder.linearLayout=(LinearLayout)convertView.findViewById(R.id.ll_ll);
+                convertView.setTag(viewHolder);
+            }else {
+                viewHolder=(ViewHolder)convertView.getTag();
+            }
+            //异步加载图片
+            viewHolder.ivIcon.setImageResource(R.mipmap.ic_launcher);
+            String iconUrl=list.get(position).newsIconUrl;
+            viewHolder.ivIcon.setTag(iconUrl);
+            imageLoader.showImageByAsyncTask(viewHolder.ivIcon, iconUrl);
+
+            viewHolder.tvTitle.setText(list.get(position).newsTitle);
+            viewHolder.tvContent.setText(list.get(position).newsContent);
+            videoName=list.get(position).newsTitle;
+            videoUrl=list.get(position).videoUrl;
+
+            viewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(getApplicationContext(), DetailsActivity.class).putExtra("videoUrl", videoUrl).putExtra("videoName", videoName));
+                }
+            });
+            return convertView;
+        }
+        class ViewHolder{
+            public TextView tvTitle,tvContent;
+            public ImageView ivIcon;
+            public LinearLayout linearLayout;
+        }
     }
 
 }

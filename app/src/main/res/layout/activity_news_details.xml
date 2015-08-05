@@ -37,6 +37,14 @@
                     android:text="视频播放"
                     android:textColor="@android:color/white"
                     android:textSize="18sp" />
+                <ImageView
+                    android:id="@+id/iv_download"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:src="@drawable/download"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true" />
             </RelativeLayout>
 
             <TextView

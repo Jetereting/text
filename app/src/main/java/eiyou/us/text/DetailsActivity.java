@@ -2,8 +2,10 @@ package eiyou.us.text;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -32,6 +34,9 @@ import java.util.TimerTask;
 import cn.bmob.v3.BmobQuery;
 import eiyou.us.text.communication.CommentAdapter;
 import eiyou.us.text.communication.CommentBean;
+import eiyou.us.text.download.entities.FileInfo;
+import eiyou.us.text.download.service.DownLoadService;
+import eiyou.us.text.utils.Utils;
 import eiyou.us.text.video.DensityUtil;
 import eiyou.us.text.video.FullScreenVideoView;
 import eiyou.us.text.video.LightnessController;
@@ -61,7 +66,7 @@ public class DetailsActivity extends Activity implements View.OnClickListener, M
     private View mBottomView;
     // 视频播放拖动条
     private SeekBar mSeekBar;
-    private ImageView mPlay, fullscreenImageView;
+    private ImageView mPlay, fullscreenImageView,mdownload;
     private TextView mPlayTime;
     private TextView mDurationTime, loadRateView;
 
@@ -75,7 +80,7 @@ public class DetailsActivity extends Activity implements View.OnClickListener, M
     // 视频播放时间
     private int playTime;
 
-    private String videoUrl = "http://7o50kb.com2.z0.glb.qiniucdn.com/kuaisu1.mp4";
+    private String videoUrl;
     // 自动隐藏顶部和底部View的时间
     private static final int HIDE_TIME = 5000;
 
@@ -84,8 +89,12 @@ public class DetailsActivity extends Activity implements View.OnClickListener, M
 
     // 原始屏幕亮度
     private int orginalLight;
+    //intent
+    Intent intent;
     //bmob
     BmobQuery<CommentBean> query;
+    //download
+    FileInfo fileInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,11 +113,35 @@ public class DetailsActivity extends Activity implements View.OnClickListener, M
             }
         });
         new CommentAsyncTask().execute(query);
+
+        mdownload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.toast.show(getApplicationContext(),"正在下载");
+                BroadcastReceiver MyReceiver = new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        if (intent.getAction().equals(DownLoadService.ACTION_UPDATE)) {
+                            int finished = intent.getIntExtra("finished", 0);
+                        }
+                    }
+                };
+                IntentFilter filter = new IntentFilter(DownLoadService.ACTION_UPDATE);
+                registerReceiver(MyReceiver, filter);
+                Intent intent = new Intent(getApplicationContext(), DownLoadService.class);
+                intent.setAction(DownLoadService.ACTION_START);
+                intent.putExtra("fileinfo", fileInfo);
+                startService(intent);
+            }
+        });
     }
 
     private void init() {
         fullscreenImageView = (ImageView) findViewById(R.id.iv_fullscreen);
         commentListView=(ListView)findViewById(R.id.lv_comment);
+        intent=getIntent();
+        videoUrl=intent.getStringExtra("videoUrl");
+        fileInfo=new FileInfo(0,intent.getStringExtra("videoUrl"),intent.getStringExtra("videoName")+".mp4",0,0);
     }
 
     private void videoAction() {
@@ -120,6 +153,7 @@ public class DetailsActivity extends Activity implements View.OnClickListener, M
         mSeekBar = (SeekBar) findViewById(R.id.seekbar);
         loadRateView = (TextView) findViewById(R.id.tv_loadRateView);
         mTopView = findViewById(R.id.top_layout);
+        mdownload=(ImageView)findViewById(R.id.iv_download);
         mBottomView = findViewById(R.id.bottom_layout);
 
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);

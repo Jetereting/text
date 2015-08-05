@@ -23,10 +23,10 @@
                 android:id="@+id/tv_title"
                 android:layout_width="fill_parent"
                 android:layout_height="53dp"
-                android:background="#ff007fff"
+                android:background="#18b4ed"
                 android:gravity="center"
                 android:text="MOOC"
-                android:textColor="#ff30ffbc"
+                android:textColor="#00ffda"
                 android:textSize="24sp" />
             <!--广告区-->
             <ImageView
