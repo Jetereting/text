@@ -17,12 +17,12 @@
             android:id="@+id/layout11"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#b4b4b4">
+            android:background="#eeeeee">
 
             <TextView
                 android:id="@+id/tv_title"
                 android:layout_width="fill_parent"
-                android:layout_height="53dp"
+                android:layout_height="50dp"
                 android:background="#18b4ed"
                 android:gravity="center"
                 android:text="MOOC"
@@ -32,7 +32,7 @@
             <ImageView
                 android:id="@+id/iv_temp"
                 android:layout_width="match_parent"
-                android:layout_height="222dp"
+                android:layout_height="200dp"
                 android:layout_below="@id/tv_title"
                 android:scaleType="fitXY"
                 android:src="@mipmap/ad" />
@@ -40,7 +40,7 @@
             <ImageView
                 android:id="@+id/iv_ad"
                 android:layout_width="match_parent"
-                android:layout_height="222dp"
+                android:layout_height="212dp"
                 android:layout_below="@id/tv_title"
                 android:scaleType="fitXY"
                 android:src="@mipmap/ad" />
@@ -69,9 +69,31 @@
                     android:layout_height="wrap_content"
                     android:divider="#11000579"
                     android:dividerHeight="3dp" />
-            </eiyou.us.text.pullToRefresh.RefreshableView>
-        </RelativeLayout>
 
+            </eiyou.us.text.pullToRefresh.RefreshableView>
+            <LinearLayout
+                android:id="@+id/ll_no_connect"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:visibility="visible"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_below="@+id/iv_ad">
+
+                <ImageView
+                    android:layout_width="98dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/wifi"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="网络连接失败"
+                    android:textColor="#adadad"/>
+            </LinearLayout>
+
+        </RelativeLayout>
 
     </android.support.v4.widget.SlidingPaneLayout>
 

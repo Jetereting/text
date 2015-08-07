@@ -109,7 +109,7 @@ public class DetailsActivity extends Activity implements View.OnClickListener, M
         fullscreenImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), VideoMainActivity.class));
+                startActivity(new Intent(getApplicationContext(), VideoMainActivity.class).putExtra("videoUrl",videoUrl));
             }
         });
         new CommentAsyncTask().execute(query);

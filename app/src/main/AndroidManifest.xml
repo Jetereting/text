@@ -46,7 +46,13 @@
             android:name=".UserInfoActivity"
             android:label="@string/title_activity_user_info" >
         </activity>
-        <service android:name="eiyou.us.text.download.service.DownLoadService"/>
+
+        <service android:name=".download.service.DownLoadService" />
+
+        <activity
+            android:name=".EditInfoActivity"
+            android:label="@string/title_activity_edit_info" >
+        </activity>
     </application>
 
 </manifest>

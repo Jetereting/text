@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,7 +33,7 @@ import java.util.List;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobUser;
-import eiyou.us.text.database.Db;
+import eiyou.us.text.newsDatabase.Db;
 import eiyou.us.text.image.ImageLoader;
 import eiyou.us.text.news.NewsBean;
 import eiyou.us.text.pullToRefresh.RefreshableView;
@@ -46,6 +48,8 @@ public class MainActivity extends Activity {
     private String URL = "http://eiyou.us/mooc/list_json.txt";
     private String videoUrl;
     private String videoName;
+    private NewsAdapter adapter;
+    private LinearLayout noConnectLinearLayout;
     BmobUser bmobUser;
     //数据库
     Db db;
@@ -57,12 +61,27 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         isLogin();
         init();
-        setAdImageView();
-        new NewsAsyncTask().execute(URL);
-        refreshListView();
+        if(isNetworkConnected(getApplicationContext())) {
+            noConnectLinearLayout.setVisibility(8);
+            setAdImageView();
+            new NewsAsyncTask().execute(URL);
+            refreshListView();
+        }else {
+            noConnectLinearLayout.setVisibility(0);
+        }
         event();
     }
-
+    public boolean isNetworkConnected(Context context) {
+        if (context != null) {
+            ConnectivityManager mConnectivityManager = (ConnectivityManager) context
+                    .getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
+            if (mNetworkInfo != null) {
+                return mNetworkInfo.isAvailable();
+            }
+        }
+        return false;
+    }
     private void isLogin() {
         bmobUser = BmobUser.getCurrentUser(this);
         if (bmobUser != null) {
@@ -92,6 +111,14 @@ public class MainActivity extends Activity {
         refreshableView.setOnRefreshListener(new RefreshableView.PullToRefreshListener() {
             @Override
             public void onRefresh() {
+                if(isNetworkConnected(getApplicationContext())) {
+                    noConnectLinearLayout.setVisibility(8);
+                    setAdImageView();
+                    new NewsAsyncTask().execute(URL);
+                    refreshListView();
+                }else {
+                    noConnectLinearLayout.setVisibility(0);
+                }
                 try {
                     new NewsAsyncTask().execute(URL);
                     Thread.sleep(1000);
@@ -152,7 +179,7 @@ public class MainActivity extends Activity {
 //            values.put("pic",);
 //            dbwrite.insert("list",null,values);
 
-            NewsAdapter adapter = new NewsAdapter(getApplicationContext(), newsBeans);
+            adapter = new NewsAdapter(getApplicationContext(), newsBeans);
             listView.setAdapter(adapter);
         }
     }
@@ -205,6 +232,7 @@ public class MainActivity extends Activity {
         tempImageView = (ImageView) findViewById(R.id.iv_temp);
         refreshableView = (RefreshableView) findViewById(R.id.rv_refresh);
         userAvatarImageView = (ImageView) findViewById(R.id.iv_user_avatar);
+        noConnectLinearLayout=(LinearLayout)findViewById(R.id.ll_no_connect);
         Bmob.initialize(this, "b683205e58831f338c406aa5ef6a5fe3");
         db = new Db(this);
 //        dbwrite=db.getWritableDatabase();
@@ -220,7 +248,10 @@ public class MainActivity extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // 点击“确认”后的操作
-                        System.exit(0);
+                        Intent home = new Intent(Intent.ACTION_MAIN);
+                        home.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        home.addCategory(Intent.CATEGORY_HOME);
+                        startActivity(home);
                     }
                 })
                 .setNegativeButton("返回", new DialogInterface.OnClickListener() {
@@ -261,11 +292,12 @@ public class MainActivity extends Activity {
             ViewHolder viewHolder=null;
             if(convertView==null){
                 viewHolder=new ViewHolder();
-                convertView=inflater.inflate(R.layout.main_item_layout,null);
+                convertView=inflater.inflate(R.layout.news_item_layout,null);
                 viewHolder.ivIcon=(ImageView)convertView.findViewById(R.id.iv_icon);
                 viewHolder.tvTitle=(TextView)convertView.findViewById(R.id.tv_title);
                 viewHolder.tvContent=(TextView)convertView.findViewById(R.id.tv_content);
                 viewHolder.linearLayout=(LinearLayout)convertView.findViewById(R.id.ll_ll);
+
                 convertView.setTag(viewHolder);
             }else {
                 viewHolder=(ViewHolder)convertView.getTag();
@@ -278,12 +310,14 @@ public class MainActivity extends Activity {
 
             viewHolder.tvTitle.setText(list.get(position).newsTitle);
             viewHolder.tvContent.setText(list.get(position).newsContent);
-            videoName=list.get(position).newsTitle;
-            videoUrl=list.get(position).videoUrl;
 
+            //相应课程点击事件
+            final int tempPosition=position;
             viewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onClick(View position) {
+                    videoName = list.get(tempPosition).newsTitle;
+                    videoUrl = list.get(tempPosition).videoUrl;
                     startActivity(new Intent(getApplicationContext(), DetailsActivity.class).putExtra("videoUrl", videoUrl).putExtra("videoName", videoName));
                 }
             });
@@ -294,6 +328,13 @@ public class MainActivity extends Activity {
             public ImageView ivIcon;
             public LinearLayout linearLayout;
         }
+
+
     }
+    public void onDestroy(){
+        listView.setAdapter(null);
+        super.onDestroy();
+    }
+
 
 }

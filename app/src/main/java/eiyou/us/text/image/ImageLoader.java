@@ -3,10 +3,12 @@ package eiyou.us.text.image;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.Log;
 import android.util.LruCache;
 import android.widget.ImageView;
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -50,6 +52,35 @@ public class ImageLoader {
         }
     }
 
+    public Bitmap getBitmapFromURL(String urlString){
+        Bitmap bitmap;
+        InputStream is=null;
+        try{
+            URL url=new URL(urlString);
+            HttpURLConnection connection=(HttpURLConnection) url.openConnection();
+            is=new BufferedInputStream(connection.getInputStream());
+            bitmap= BitmapFactory.decodeStream(is);
+            connection.disconnect();
+            return bitmap;
+        }catch (Exception e){
+            e.printStackTrace();
+            Log.d("w","wrong   of    get   bitmap    from      url ");
+        }finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    //DiskLruCache二级缓存机制
+
+
+
+
+
     public class NewsAsyncTask extends AsyncTask<String,Void,Bitmap>{
         private ImageView imageView;
         public NewsAsyncTask(ImageView imageView){
@@ -74,31 +105,6 @@ public class ImageLoader {
             }catch (Exception e){
                 imageView.setImageBitmap(bitmap);
             }
-
         }
-    }
-
-
-    public Bitmap getBitmapFromURL(String urlString){
-        Bitmap bitmap;
-        InputStream is=null;
-        try{
-            URL url=new URL(urlString);
-            HttpURLConnection connection=(HttpURLConnection) url.openConnection();
-            is=new BufferedInputStream(connection.getInputStream());
-            bitmap= BitmapFactory.decodeStream(is);
-            connection.disconnect();
-            return bitmap;
-        }catch (Exception e){
-            e.printStackTrace();
-            Log.d("w","wrong   of    get   bitmap    from      url ");
-        }finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
     }
 }

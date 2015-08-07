@@ -75,8 +75,8 @@ public class VideoMainActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_full_video_main);
 		init();
 		//上个页面来的视频播放地址
-//		Intent intent=getIntent();
-//		videoUrl=intent.getExtras().getString("videoUrl");
+		Intent intent=getIntent();
+		videoUrl=intent.getExtras().getString("videoUrl");
 		event();
 		videoAction();
 
