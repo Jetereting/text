@@ -10,23 +10,21 @@ public class MyUser extends BmobUser {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private String sign;
+	private String instruction,hobby;
 
-	public String getJob() {
-		return job;
+	public String getInstruction() {
+		return instruction;
 	}
 
-	public void setJob(String job) {
-		this.job = job;
+	public void setInstruction(String instruction) {
+		this.instruction = instruction;
 	}
 
-	public String getSign() {
-		return sign;
+	public String getHobby() {
+		return hobby;
 	}
 
-	public void setSign(String sign) {
-		this.sign = sign;
+	public void setHobby(String hobby) {
+		this.hobby = hobby;
 	}
-
-	private String job;
 }

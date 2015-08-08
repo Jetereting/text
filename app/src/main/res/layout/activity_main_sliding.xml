@@ -12,6 +12,8 @@
             android:id="@+id/id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginLeft="15dp"
             android:layout_centerHorizontal="true">
 
             <ImageView
@@ -34,7 +36,7 @@
                 android:textSize="22sp" />
 
             <TextView
-                android:id="@+id/tv_user_job"
+                android:id="@+id/tv_user_instruction"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_user_name"
@@ -53,7 +55,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:background="#00ffffff"
-                android:layout_alignBottom="@+id/tv_user_job"
+                android:layout_alignBottom="@+id/tv_user_instruction"
                 android:layout_alignRight="@+id/tv_user_name"
                 android:layout_alignEnd="@+id/tv_user_name" />
         </RelativeLayout>
@@ -74,7 +76,7 @@
                 android:background="@drawable/home" />
 
             <TextView
-
+                android:id="@+id/tv_school"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_alignParentTop="true"
@@ -82,7 +84,7 @@
                 android:layout_toEndOf="@+id/my1"
                 android:layout_toRightOf="@+id/my1"
                 android:gravity="center_vertical"
-                android:text="  我的学校"
+                android:text="  学校课程"
                 android:textColor="#ffffffff"
                 android:textSize="20dp" />
 
@@ -112,7 +114,7 @@
                 android:layout_toEndOf="@+id/my"
                 android:layout_toRightOf="@+id/my"
                 android:gravity="center_vertical"
-                android:text="  我的课程"
+                android:text="  我的关注"
                 android:textColor="#ffffffff"
                 android:textSize="20dp" />
 

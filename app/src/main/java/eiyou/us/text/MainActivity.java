@@ -11,6 +11,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,10 +21,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.baidu.voicerecognition.android.ui.BaiduASRDigitalDialog;
+import com.baidu.voicerecognition.android.ui.DialogRecognitionListener;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.net.URL;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -33,11 +39,16 @@ import java.util.List;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobFile;
+import cn.bmob.v3.listener.SaveListener;
+import eiyou.us.text.news.BmobNews;
 import eiyou.us.text.newsDatabase.Db;
 import eiyou.us.text.image.ImageLoader;
 import eiyou.us.text.news.NewsBean;
 import eiyou.us.text.pullToRefresh.RefreshableView;
 import eiyou.us.text.utils.Utils;
+import eiyou.us.text.yuyin.Config;
+import eiyou.us.text.yuyin.Constants;
 
 public class MainActivity extends Activity {
     private ImageView adImageView, tempImageView, userAvatarImageView;
@@ -50,10 +61,13 @@ public class MainActivity extends Activity {
     private String videoName;
     private NewsAdapter adapter;
     private LinearLayout noConnectLinearLayout;
+    private TextView schoolTextView;
+    //语音
+    private BaiduASRDigitalDialog mDialog = null;
+    private DialogRecognitionListener mRecognitionListener;
+    private int mCurrentTheme = Config.DIALOG_THEME;
+
     BmobUser bmobUser;
-    //数据库
-    Db db;
-    SQLiteDatabase dbwrite, dbread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,16 +75,17 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         isLogin();
         init();
-        if(isNetworkConnected(getApplicationContext())) {
+        if (isNetworkConnected(getApplicationContext())) {
             noConnectLinearLayout.setVisibility(8);
             setAdImageView();
             new NewsAsyncTask().execute(URL);
             refreshListView();
-        }else {
+        } else {
             noConnectLinearLayout.setVisibility(0);
         }
         event();
     }
+
     public boolean isNetworkConnected(Context context) {
         if (context != null) {
             ConnectivityManager mConnectivityManager = (ConnectivityManager) context
@@ -82,6 +97,7 @@ public class MainActivity extends Activity {
         }
         return false;
     }
+
     private void isLogin() {
         bmobUser = BmobUser.getCurrentUser(this);
         if (bmobUser != null) {
@@ -96,11 +112,17 @@ public class MainActivity extends Activity {
         userButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(bmobUser!=null) {
-                    startActivity(new Intent(getApplicationContext(),UserInfoActivity.class));
-                }else {
+                if (bmobUser != null) {
+                    startActivity(new Intent(getApplicationContext(), UserInfoActivity.class));
+                } else {
                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 }
+            }
+        });
+        schoolTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
     }
@@ -111,12 +133,12 @@ public class MainActivity extends Activity {
         refreshableView.setOnRefreshListener(new RefreshableView.PullToRefreshListener() {
             @Override
             public void onRefresh() {
-                if(isNetworkConnected(getApplicationContext())) {
+                if (isNetworkConnected(getApplicationContext())) {
                     noConnectLinearLayout.setVisibility(8);
                     setAdImageView();
                     new NewsAsyncTask().execute(URL);
                     refreshListView();
-                }else {
+                } else {
                     noConnectLinearLayout.setVisibility(0);
                 }
                 try {
@@ -174,11 +196,6 @@ public class MainActivity extends Activity {
         @Override
         protected void onPostExecute(List<NewsBean> newsBeans) {
             super.onPostExecute(newsBeans);
-            //到本地数据库操作
-//            ContentValues values=new ContentValues();
-//            values.put("pic",);
-//            dbwrite.insert("list",null,values);
-
             adapter = new NewsAdapter(getApplicationContext(), newsBeans);
             listView.setAdapter(adapter);
         }
@@ -201,6 +218,25 @@ public class MainActivity extends Activity {
                 newsBean.newsContent = jsonObject.getString("content");
                 newsBean.videoUrl = jsonObject.getString("video");
                 newsBeanList.add(newsBean);
+
+                //bmob
+//                BmobNews bmobNews = new BmobNews();
+//                bmobNews.setNewsIcon(new BmobFile(new File(newsBean.newsIconUrl)));
+//                bmobNews.setNewsIcon();
+//                bmobNews.setNewsTitle(newsBean.newsTitle);
+//                bmobNews.setNewsContent(newsBean.newsContent);
+//                bmobNews.setNewsVideoUrl(newsBean.newsContent);
+//                bmobNews.save(getApplicationContext(), new SaveListener() {
+//                    @Override
+//                    public void onSuccess() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onFailure(int i, String s) {
+//                        Log.e("ee", s);
+//                    }
+//                });
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -232,46 +268,89 @@ public class MainActivity extends Activity {
         tempImageView = (ImageView) findViewById(R.id.iv_temp);
         refreshableView = (RefreshableView) findViewById(R.id.rv_refresh);
         userAvatarImageView = (ImageView) findViewById(R.id.iv_user_avatar);
-        noConnectLinearLayout=(LinearLayout)findViewById(R.id.ll_no_connect);
+        noConnectLinearLayout = (LinearLayout) findViewById(R.id.ll_no_connect);
+        schoolTextView = (TextView) findViewById(R.id.tv_school);
         Bmob.initialize(this, "b683205e58831f338c406aa5ef6a5fe3");
-        db = new Db(this);
-//        dbwrite=db.getWritableDatabase();
     }
 
 
     @Override
-    public void onBackPressed() {
-        new AlertDialog.Builder(this).setTitle("确认退出吗？")
-                .setIcon(android.R.drawable.ic_dialog_info)
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+            mRecognitionListener = new DialogRecognitionListener() {
+                @Override
+                public void onResults(Bundle results) {
+                    ArrayList<String> rs = results != null ? results
+                            .getStringArrayList(RESULTS_RECOGNITION) : null;
+                    if (rs != null && rs.size() > 0) {
+                        String heard = rs.get(0);
+                        if (heard.indexOf("退出") >= 0) {
+                            startActivity(new Intent(Intent.ACTION_MAIN).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addCategory(Intent.CATEGORY_HOME));
+                        } else if (heard.indexOf("个人信息") >= 0) {
+                            Log.e("ee", "个人信息");
+                            startActivity(new Intent(getApplicationContext(), UserInfoActivity.class));
+                        } else if (heard.indexOf("编辑") >= 0) {
+                            startActivity(new Intent(getApplicationContext(), EditInfoActivity.class));
+                        }
+                    }
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // 点击“确认”后的操作
-                        Intent home = new Intent(Intent.ACTION_MAIN);
-                        home.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        home.addCategory(Intent.CATEGORY_HOME);
-                        startActivity(home);
-                    }
-                })
-                .setNegativeButton("返回", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // 点击“返回”后的操作,这里不设置没有任何操作
-                    }
-                }).show();
-        // super.onBackPressed();
+                }
+            };
+            mCurrentTheme = Config.DIALOG_THEME;
+            if (mDialog != null) {
+                mDialog.dismiss();
+            }
+            Bundle params = new Bundle();
+            params.putString(BaiduASRDigitalDialog.PARAM_API_KEY, Constants.API_KEY);
+            params.putString(BaiduASRDigitalDialog.PARAM_SECRET_KEY, Constants.SECRET_KEY);
+            params.putInt(BaiduASRDigitalDialog.PARAM_DIALOG_THEME, Config.DIALOG_THEME);
+            mDialog = new BaiduASRDigitalDialog(MainActivity.this, params);
+            mDialog.setDialogRecognitionListener(mRecognitionListener);
+//                }
+            mDialog.getParams().putInt(BaiduASRDigitalDialog.PARAM_PROP, Config.CURRENT_PROP);
+            mDialog.getParams().putString(BaiduASRDigitalDialog.PARAM_LANGUAGE,
+                    Config.getCurrentLanguage());
+            Log.e("DEBUG", "Config.PLAY_START_SOUND = " + Config.PLAY_START_SOUND);
+            mDialog.getParams().putBoolean(BaiduASRDigitalDialog.PARAM_START_TONE_ENABLE, Config.PLAY_START_SOUND);
+            mDialog.getParams().putBoolean(BaiduASRDigitalDialog.PARAM_END_TONE_ENABLE, Config.PLAY_END_SOUND);
+            mDialog.getParams().putBoolean(BaiduASRDigitalDialog.PARAM_TIPS_TONE_ENABLE, Config.DIALOG_TIPS_SOUND);
+            mDialog.show();
+        } else if (keyCode == KeyEvent.KEYCODE_BACK) {
+            new AlertDialog.Builder(this).setTitle("确认退出吗？")
+                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // 点击“确认”后的操作
+                            Intent home = new Intent(Intent.ACTION_MAIN);
+                            home.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            home.addCategory(Intent.CATEGORY_HOME);
+                            startActivity(home);
+                        }
+                    })
+                    .setNegativeButton("返回", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // 点击“返回”后的操作,这里不设置没有任何操作
+                        }
+                    }).show();
+        }
+        return true;
     }
+
+
     public class NewsAdapter extends BaseAdapter {
         private List<NewsBean> list;
         private LayoutInflater inflater;
         private ImageLoader imageLoader;
 
-        public NewsAdapter(Context context,List<NewsBean> data){
-            list=data;
-            inflater=LayoutInflater.from(context);
-            imageLoader=new ImageLoader();
+        public NewsAdapter(Context context, List<NewsBean> data) {
+            list = data;
+            inflater = LayoutInflater.from(context);
+            imageLoader = new ImageLoader();
         }
+
         @Override
         public int getCount() {
             return list.size();
@@ -289,30 +368,38 @@ public class MainActivity extends Activity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder viewHolder=null;
-            if(convertView==null){
-                viewHolder=new ViewHolder();
-                convertView=inflater.inflate(R.layout.news_item_layout,null);
-                viewHolder.ivIcon=(ImageView)convertView.findViewById(R.id.iv_icon);
-                viewHolder.tvTitle=(TextView)convertView.findViewById(R.id.tv_title);
-                viewHolder.tvContent=(TextView)convertView.findViewById(R.id.tv_content);
-                viewHolder.linearLayout=(LinearLayout)convertView.findViewById(R.id.ll_ll);
+            ViewHolder viewHolder = null;
+            if (convertView == null) {
+                viewHolder = new ViewHolder();
+                convertView = inflater.inflate(R.layout.news_item_layout, null);
+                viewHolder.ivIcon = (ImageView) convertView.findViewById(R.id.iv_icon);
+                viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tv_title);
+                viewHolder.tvContent = (TextView) convertView.findViewById(R.id.tv_content);
+                viewHolder.linearLayout = (LinearLayout) convertView.findViewById(R.id.ll_ll);
 
                 convertView.setTag(viewHolder);
-            }else {
-                viewHolder=(ViewHolder)convertView.getTag();
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
             }
             //异步加载图片
             viewHolder.ivIcon.setImageResource(R.mipmap.ic_launcher);
-            String iconUrl=list.get(position).newsIconUrl;
+            String iconUrl = list.get(position).newsIconUrl;
             viewHolder.ivIcon.setTag(iconUrl);
             imageLoader.showImageByAsyncTask(viewHolder.ivIcon, iconUrl);
+
+            //bmob
+//            BmobNews bmobNews=new BmobNews();
+//            bmobNews.setNewsIcon(new BmobFile(new File(list.get(position).newsIconUrl)));
+//            bmobNews.setNewsTitle(list.get(position).newsTitle);
+//            bmobNews.setNewsContent(list.get(position).newsContent);
+//            bmobNews.setNewsVideoUrl(list.get(position).videoUrl);
+//            bmobNews.save(getApplicationContext());
 
             viewHolder.tvTitle.setText(list.get(position).newsTitle);
             viewHolder.tvContent.setText(list.get(position).newsContent);
 
             //相应课程点击事件
-            final int tempPosition=position;
+            final int tempPosition = position;
             viewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View position) {
@@ -323,18 +410,16 @@ public class MainActivity extends Activity {
             });
             return convertView;
         }
-        class ViewHolder{
-            public TextView tvTitle,tvContent;
+
+        class ViewHolder {
+            public TextView tvTitle, tvContent;
             public ImageView ivIcon;
             public LinearLayout linearLayout;
         }
-
-
     }
-    public void onDestroy(){
+
+    public void onDestroy() {
         listView.setAdapter(null);
         super.onDestroy();
     }
-
-
 }

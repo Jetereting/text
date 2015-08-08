@@ -7,7 +7,7 @@
     <RelativeLayout
         android:id="@+id/rl_video"
         android:layout_width="match_parent"
-        android:layout_height="222dp"
+        android:layout_height="204dp"
         android:background="#d4d5d0" >
 
         <eiyou.us.text.video.FullScreenVideoView

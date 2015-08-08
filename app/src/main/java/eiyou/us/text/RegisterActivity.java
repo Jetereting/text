@@ -55,7 +55,6 @@ public class RegisterActivity extends Activity {
         final MyUser myUser = new MyUser();
         myUser.setUsername(userName);
         myUser.setPassword(userPassword);
-        myUser.setJob("移动开发人员");
         myUser.signUp(this, new SaveListener() {
 
             @Override

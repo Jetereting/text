@@ -23,4 +23,5 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile files('libs/BmobSDK_V3.4.1_0710.jar')
+    compile files('libs/VoiceRecognition.jar')
 }

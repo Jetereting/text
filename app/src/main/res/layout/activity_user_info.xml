@@ -20,22 +20,17 @@
             <TextView
                 android:id="@+id/tv_back"
                 android:layout_width="34dp"
-                android:layout_height="46dp"
-                android:background="@drawable/go_back"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="返回"
-                android:textSize="19dp"
-                android:layout_alignBottom="@+id/tv_user_info_change"
-                android:layout_alignLeft="@+id/iv_user_avatar"
-                android:layout_alignStart="@+id/iv_user_avatar" />
+                android:layout_height="26dp"
+                android:layout_marginTop="7dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/btn_back"/>
+
             <TextView
                 android:id="@+id/tv_user_info_change"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="编辑"
-                android:textSize="20dp"
+                android:textSize="21dp"
                 android:layout_margin="10dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
