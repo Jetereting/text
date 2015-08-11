@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/shang"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/jiaowu"
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
+            android:background="#ff007fff"
+            android:gravity="center"
+            android:text="关  于"
+            android:textColor="#FFFFFF"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/tv_back"
+            android:layout_width="30dp"
+            android:layout_height="28dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/btn_back" />
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/zhong"
+        android:layout_below="@+id/shang"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#e5e9ec"
+        >
+        <ImageView
+            android:layout_margin="10dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:src="@drawable/ic_launcher"
+            android:id="@+id/imageView2" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="US MOOC"
+            android:textSize="18dp"
+            android:textColor="#2f2f2f"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/imageView2"
+            android:layout_toEndOf="@+id/imageView2" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#626262"
+            android:text="版本1.1"
+            android:textSize="14dp"
+            android:layout_alignBottom="@+id/imageView2"
+            android:layout_toRightOf="@+id/imageView2"
+            android:layout_toEndOf="@+id/imageView2" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/zhong1"
+        android:layout_below="@+id/zhong"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#e5e9ec"
+        >
+        <TextView
+            android:id="@+id/henggang"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="#b1b2b4"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
+        <TextView
+            android:id="@+id/wenzi"
+            android:layout_marginTop="15dp"
+            android:layout_below="@id/henggang"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:lineSpacingExtra="5dp"
+            android:text="        USMOOC是青岛科技大学高密校区计算机系的四位大一同学组成的队伍“我们是一个团队”制作的一个全新的“大规模、开放式、在线教程”教育产品。在我们的模式下，大学的课程、课堂教学、统一学习等都能被完整的系统的在线实现。"
+            android:textColor="#000000"/>
+        <TextView
+            android:id="@+id/lianxi"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_below="@+id/wenzi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="联系我们"
+            android:textColor="#000000"
+            android:textSize="20dp"
+            />
+        <TextView
+            android:id="@+id/dianhua"
+            android:layout_below="@+id/lianxi"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:textColor="#000000"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"
+            android:text="   ☏    178-xxxx-xxxx"
+            android:textSize="22dp"/>
+        <TextView
+            android:layout_below="@+id/dianhua"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:textColor="#000000"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"
+            android:text="   ✉     ziweiqiao@qq.com"
+            android:textSize="22dp"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

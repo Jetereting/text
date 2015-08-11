@@ -103,10 +103,10 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_centerVertical="true"
-                android:background="@drawable/sliding_mycourse" />
+                android:background="@drawable/sliding_allcourse_normal" />
 
             <TextView
-                android:id="@+id/my_learn"
+                android:id="@+id/all_learn"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_alignParentTop="true"
@@ -114,7 +114,7 @@
                 android:layout_toEndOf="@+id/my"
                 android:layout_toRightOf="@+id/my"
                 android:gravity="center_vertical"
-                android:text="  我的关注"
+                android:text="  综合课程"
                 android:textColor="#ffffffff"
                 android:textSize="20dp" />
 
@@ -131,7 +131,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_centerVertical="true"
-                android:background="@drawable/sliding_allcourse_normal" />
+                android:background="@drawable/xiazai" />
             <TextView
                 android:id="@+id/downloaded"
                 android:layout_width="match_parent"

@@ -12,7 +12,7 @@
         <TextView
             android:id="@+id/jiaowu"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="47dp"
             android:background="#ff007fff"
             android:gravity="center"
             android:text="教务系统登录"
@@ -20,9 +20,10 @@
             android:textSize="18dp" />
 
         <TextView
+            android:id="@+id/tv_back"
             android:layout_width="30dp"
             android:layout_height="28dp"
-            android:layout_margin="5dp"
+            android:layout_margin="8dp"
             android:background="@drawable/btn_back" />
 
     </RelativeLayout>
@@ -47,6 +48,7 @@
             android:textSize="18dp" />
 
         <EditText
+            android:id="@+id/ed_school"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginLeft="60dp"
@@ -76,6 +78,7 @@
             android:textSize="18dp" />
 
         <EditText
+            android:id="@+id/ed_school_id"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginLeft="60dp"
@@ -105,6 +108,7 @@
             android:textSize="18dp" />
 
         <EditText
+            android:id="@+id/ed_school_pwd"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginLeft="60dp"
