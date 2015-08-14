@@ -41,7 +41,7 @@ public class UserInfoActivity extends Activity {
         backTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                finish();
             }
         });
         buttonBackTextView.setOnClickListener(new View.OnClickListener() {
@@ -49,6 +49,7 @@ public class UserInfoActivity extends Activity {
             public void onClick(View v) {
                 BmobUser.logOut(getApplicationContext());   //清除缓存用户对象
                 bmobUser = BmobUser.getCurrentUser(getApplicationContext()); // 现在的currentUser是null了
+                startActivity(new Intent(getApplicationContext(),LoginActivity.class));
             }
         });
     }

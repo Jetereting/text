@@ -21,6 +21,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import eiyou.us.text.download.ShowDownload;
+import eiyou.us.text.utils.Utils;
 
 public class DownloadedActivity extends Activity {
     ListView listView;
@@ -103,6 +104,13 @@ public class DownloadedActivity extends Activity {
                 public void onClick(View position) {
                     videoPath = pathList.get(tempPosition);
                     startActivity(new Intent(Intent.ACTION_VIEW).setDataAndType(Uri.parse(videoPath),"video/mp4"));
+                }
+            });
+            viewHolder.textView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Utils.toast.show(getApplicationContext(),"想删除他？可以到.us.mooc目录删除哦");
+                    return true;
                 }
             });
             return convertView;

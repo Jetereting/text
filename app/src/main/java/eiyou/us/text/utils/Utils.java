@@ -16,7 +16,7 @@ import cn.bmob.v3.listener.SaveListener;
  */
 public class Utils {
     public static class sharedPreferences extends Activity {
-        static SharedPreferences openTimes;
+        static SharedPreferences openTimes,whichClass;
         public static void putInt(Context context,String key, int value) {
             openTimes=context.getSharedPreferences("openTimes", 0);
             SharedPreferences.Editor editor = openTimes.edit();
@@ -26,7 +26,6 @@ public class Utils {
         public static int getInt(String key, int value) {
             return openTimes.getInt(key, value);
         }
-
     }
     public static class toast{
         public static void show(Context context, String message)

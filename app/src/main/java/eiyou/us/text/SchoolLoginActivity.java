@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +34,8 @@ public class SchoolLoginActivity extends Activity {
         schoolTextView=(EditText)findViewById(R.id.ed_school);
         schoolIdTextView=(EditText)findViewById(R.id.ed_school_id);
         schoolPwdTextview=(EditText)findViewById(R.id.ed_school_pwd);
+        myUser=BmobUser.getCurrentUser(this,MyUser.class);
+        bmobUser=BmobUser.getCurrentUser(this);
     }
 
     private void getEdit() {
@@ -54,6 +57,7 @@ public class SchoolLoginActivity extends Activity {
             @Override
             public void onClick(View v) {
                 getEdit();
+                Log.e("ee",school+schoolPwd+schoolId);
                 myUser.setSchool(school);
                 myUser.setSchoolId(schoolId);
                 myUser.setSchoolPwd(schoolPwd);

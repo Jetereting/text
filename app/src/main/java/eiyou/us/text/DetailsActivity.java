@@ -10,6 +10,7 @@ import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ import java.util.TimerTask;
 import cn.bmob.v3.BmobQuery;
 import eiyou.us.text.communication.CommentAdapter;
 import eiyou.us.text.communication.CommentBean;
+import eiyou.us.text.download.ShowDownload;
 import eiyou.us.text.download.entities.FileInfo;
 import eiyou.us.text.download.service.DownLoadService;
 import eiyou.us.text.utils.Utils;
@@ -301,7 +303,16 @@ public class DetailsActivity extends Activity implements View.OnClickListener, M
     };
 
     private void playVideo() {
-        mVideo.setVideoPath(videoUrl);
+        //如果已经下载好
+        if(ShowDownload.isExist(Environment.getExternalStorageDirectory()
+                .getAbsolutePath() + "/.us.mooc/",fileInfo.getFilename())){
+
+            mVideo.setVideoPath(Environment.getExternalStorageDirectory()
+                    .getAbsolutePath() + "/.us.mooc/"+fileInfo.getFilename());
+        }else {
+            mVideo.setVideoPath(videoUrl);
+        }
+
         mVideo.requestFocus();
         mVideo.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override

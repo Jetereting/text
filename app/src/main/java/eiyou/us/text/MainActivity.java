@@ -5,7 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -21,7 +21,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.baidu.voicerecognition.android.ui.BaiduASRDigitalDialog;
 import com.baidu.voicerecognition.android.ui.DialogRecognitionListener;
@@ -29,7 +28,6 @@ import com.baidu.voicerecognition.android.ui.DialogRecognitionListener;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.net.URL;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -39,11 +37,7 @@ import java.util.List;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.datatype.BmobFile;
-import cn.bmob.v3.listener.SaveListener;
 import eiyou.us.text.communication.MyUser;
-import eiyou.us.text.news.BmobNews;
-import eiyou.us.text.newsDatabase.Db;
 import eiyou.us.text.image.ImageLoader;
 import eiyou.us.text.news.NewsBean;
 import eiyou.us.text.pullToRefresh.RefreshableView;
@@ -58,18 +52,21 @@ public class MainActivity extends Activity {
     private RefreshableView refreshableView;
     private ListView listView;
     private String URL = "http://eiyou.us/mooc/list_json.txt";
-    private String softURL="http://eiyou.us/mooc/soft_list_json.txt";
-    private String computerURl="http://eiyou.us/mooc/computer_list_json.txt";
+    private String softURL = "http://eiyou.us/mooc/soft_list_json.txt";
+    private String computerURl = "http://eiyou.us/mooc/computer_list_json.txt";
     private String videoUrl;
     private String videoName;
     private NewsAdapter adapter;
     private LinearLayout noConnectLinearLayout;
-    private TextView schoolTextView;
+    private TextView schoolTextView, userName, userInstruction;
     //语音
     private BaiduASRDigitalDialog mDialog = null;
     private DialogRecognitionListener mRecognitionListener;
     private int mCurrentTheme = Config.DIALOG_THEME;
     private Intent intent;
+    int whichClass=0;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
     BmobUser bmobUser;
     MyUser myUser;
 
@@ -80,21 +77,26 @@ public class MainActivity extends Activity {
         isLogin();
         init();
         if (isNetworkConnected(getApplicationContext())) {
-            noConnectLinearLayout.setVisibility(8);
+            noConnectLinearLayout.setVisibility(View.GONE);
             setAdImageView();
-            if(intent.getStringExtra("schoolId")!=null) {
-                if (intent.getStringExtra("schoolId").indexOf("140820") >= 0) {
+
+            if (myUser.getSchoolId() != null) {
+                if (myUser.getSchoolId().indexOf("1408620") >= 0) {
                     new NewsAsyncTask().execute(softURL);
+                    whichClass=20;
                 }
-                if (intent.getStringExtra("schoolId").indexOf("140810") >= 0) {
+                if (myUser.getSchoolId().indexOf("1408610") >= 0) {
                     new NewsAsyncTask().execute(computerURl);
+                    whichClass=10;
                 }
-            }else {
+            } else {
                 new NewsAsyncTask().execute(URL);
+                whichClass=0;
             }
+//            new NewsAsyncTask().execute(softURL);
             refreshListView();
         } else {
-            noConnectLinearLayout.setVisibility(0);
+            noConnectLinearLayout.setVisibility(View.VISIBLE);
         }
         event();
     }
@@ -123,6 +125,10 @@ public class MainActivity extends Activity {
 
     private void event() {
         //用户信息
+        if (bmobUser != null) {
+            userName.setText(myUser.getUsername());
+            userInstruction.setText(myUser.getInstruction());
+        }
         userButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,11 +143,16 @@ public class MainActivity extends Activity {
         schoolTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(myUser.getSchoolId()==null){
-                    Utils.toast.show(getApplicationContext(),"请先完成教务系统绑定");
-                    startActivity(new Intent(getApplicationContext(),SchoolLoginActivity.class));
-                }else {
-                    startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                if (bmobUser != null) {
+                    if (myUser.getSchoolId() == null) {
+                        Utils.toast.show(getApplicationContext(), "请先完成教务系统绑定");
+                        startActivity(new Intent(getApplicationContext(), SchoolLoginActivity.class));
+                    } else {
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    }
+                } else {
+                    Utils.toast.show(getApplicationContext(), "请先登录 ");
+                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 }
             }
         });
@@ -149,21 +160,22 @@ public class MainActivity extends Activity {
         findViewById(R.id.all_learn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new NewsAsyncTask().execute(URL);
+                whichClass=0;
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
         });
         //离线缓存
         findViewById(R.id.downloaded).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),DownloadedActivity.class));
+                startActivity(new Intent(getApplicationContext(), DownloadedActivity.class));
             }
         });
         //关于我们
         findViewById(R.id.about_us).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),AboutUsActivity.class));
+                startActivity(new Intent(getApplicationContext(), AboutUsActivity.class));
             }
         });
     }
@@ -175,15 +187,34 @@ public class MainActivity extends Activity {
             @Override
             public void onRefresh() {
                 if (isNetworkConnected(getApplicationContext())) {
-                    noConnectLinearLayout.setVisibility(8);
-                    setAdImageView();
-                    new NewsAsyncTask().execute(URL);
+                    noConnectLinearLayout.setVisibility(View.GONE);
+                    switch (whichClass) {
+                        case 0:
+                            new NewsAsyncTask().execute(URL);
+                            break;
+                        case 10:
+                            new NewsAsyncTask().execute(computerURl);
+                            break;
+                        case 20:
+                            new NewsAsyncTask().execute(softURL);
+                            break;
+                    }
                     refreshListView();
                 } else {
-                    noConnectLinearLayout.setVisibility(0);
+                    noConnectLinearLayout.setVisibility(View.VISIBLE);
                 }
                 try {
-                    new NewsAsyncTask().execute(URL);
+                    switch (whichClass) {
+                        case 0:
+                            new NewsAsyncTask().execute(URL);
+                            break;
+                        case 10:
+                            new NewsAsyncTask().execute(computerURl);
+                            break;
+                        case 20:
+                            new NewsAsyncTask().execute(softURL);
+                            break;
+                    }
                     Thread.sleep(1000);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -197,33 +228,45 @@ public class MainActivity extends Activity {
     private void setAdImageView() {
         imageLoader = new ImageLoader();
         //预加载
-        imageLoader.showImageByAsyncTask(tempImageView, "http://eiyou.us/mooc/ad/ad1.jpg");
-        imageLoader.showImageByAsyncTask(tempImageView, "http://eiyou.us/mooc/ad/ad2.jpg");
-        imageLoader.showImageByAsyncTask(tempImageView, "http://eiyou.us/mooc/ad/ad3.jpg");
-        imageLoader.showImageByAsyncTask(tempImageView, "http://eiyou.us/mooc/ad/ad0.jpg");
+        switch (whichClass) {
+            case 0:
+                imageLoader.showImageByAsyncTask(tempImageView, "http://eiyou.us/mooc/ad/ad1.jpg");
+                imageLoader.showImageByAsyncTask(tempImageView, "http://eiyou.us/mooc/ad/ad2.jpg");
+                imageLoader.showImageByAsyncTask(tempImageView, "http://eiyou.us/mooc/ad/ad3.jpg");
+                imageLoader.showImageByAsyncTask(tempImageView, "http://eiyou.us/mooc/ad/ad0.jpg");
 
-        Utils.sharedPreferences.putInt(getApplicationContext(), "which_ad", 0);
-        nextAdButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int which_ad = Utils.sharedPreferences.getInt("which_ad", 0) % 4;
-                Utils.sharedPreferences.putInt(getApplicationContext(), "which_ad", Utils.sharedPreferences.getInt("which_ad", 0) + 1);
-                if (which_ad == 0) {
-                    imageLoader.showImageByAsyncTask(adImageView, "http://eiyou.us/mooc/ad/ad1.jpg");
-                } else if (which_ad == 1) {
-                    imageLoader.showImageByAsyncTask(adImageView, "http://eiyou.us/mooc/ad/ad2.jpg");
-                } else if (which_ad == 2) {
-                    imageLoader.showImageByAsyncTask(adImageView, "http://eiyou.us/mooc/ad/ad3.jpg");
-                } else if (which_ad == 3) {
-                    imageLoader.showImageByAsyncTask(adImageView, "http://eiyou.us/mooc/ad/ad0.jpg");
-                } else {
-                    imageLoader.showImageByAsyncTask(adImageView, "http://eiyou.us/mooc/ad/ad0.jpg");
-                }
-                if (Utils.sharedPreferences.getInt("which_ad", 0) >= 232323232) {
-                    Utils.sharedPreferences.putInt(getApplicationContext(), "which_ad", 0);
-                }
-            }
-        });
+                Utils.sharedPreferences.putInt(getApplicationContext(), "which_ad", 0);
+                nextAdButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int which_ad = Utils.sharedPreferences.getInt("which_ad", 0) % 4;
+                        Utils.sharedPreferences.putInt(getApplicationContext(), "which_ad", Utils.sharedPreferences.getInt("which_ad", 0) + 1);
+                        if (which_ad == 0) {
+                            imageLoader.showImageByAsyncTask(adImageView, "http://eiyou.us/mooc/ad/ad1.jpg");
+                        } else if (which_ad == 1) {
+                            imageLoader.showImageByAsyncTask(adImageView, "http://eiyou.us/mooc/ad/ad2.jpg");
+                        } else if (which_ad == 2) {
+                            imageLoader.showImageByAsyncTask(adImageView, "http://eiyou.us/mooc/ad/ad3.jpg");
+                        } else if (which_ad == 3) {
+                            imageLoader.showImageByAsyncTask(adImageView, "http://eiyou.us/mooc/ad/ad0.jpg");
+                        } else {
+                            imageLoader.showImageByAsyncTask(adImageView, "http://eiyou.us/mooc/ad/ad0.jpg");
+                        }
+                        if (Utils.sharedPreferences.getInt("which_ad", 0) >= 232323232) {
+                            Utils.sharedPreferences.putInt(getApplicationContext(), "which_ad", 0);
+                        }
+                    }
+                });break;
+            case 10:
+                tempImageView.setImageResource(R.drawable.computer_ad);
+                nextAdButton.setVisibility(View.GONE);
+                break;
+            case 20:
+                tempImageView.setImageResource(R.drawable.computer_ad);
+                nextAdButton.setVisibility(View.GONE);
+                break;
+        }
+
     }
 
     //异步加载课程列表
@@ -305,14 +348,21 @@ public class MainActivity extends Activity {
         userButton = (Button) findViewById(R.id.b_user);
         listView = (ListView) findViewById(R.id.lv_list);
         adImageView = (ImageView) findViewById(R.id.iv_ad);
+        userName = (TextView) findViewById(R.id.tv_user_name);
         nextAdButton = (Button) findViewById(R.id.b_next_ad);
         tempImageView = (ImageView) findViewById(R.id.iv_temp);
+        userInstruction = (TextView) findViewById(R.id.tv_user_instruction);
         refreshableView = (RefreshableView) findViewById(R.id.rv_refresh);
         userAvatarImageView = (ImageView) findViewById(R.id.iv_user_avatar);
         noConnectLinearLayout = (LinearLayout) findViewById(R.id.ll_no_connect);
         schoolTextView = (TextView) findViewById(R.id.tv_school);
         Bmob.initialize(this, "b683205e58831f338c406aa5ef6a5fe3");
-        intent=this.getIntent();
+        intent = this.getIntent();
+        sharedPreferences = getSharedPreferences("test",
+                Activity.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        myUser = BmobUser.getCurrentUser(this, MyUser.class);
+        bmobUser = BmobUser.getCurrentUser(this);
     }
 
 
