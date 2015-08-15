@@ -63,6 +63,7 @@ public class MainActivity extends Activity {
     private BaiduASRDigitalDialog mDialog = null;
     private DialogRecognitionListener mRecognitionListener;
     private int mCurrentTheme = Config.DIALOG_THEME;
+
     private Intent intent;
     int whichClass=0;
     SharedPreferences sharedPreferences;
@@ -385,6 +386,12 @@ public class MainActivity extends Activity {
                             startActivity(new Intent(getApplicationContext(), UserInfoActivity.class));
                         } else if (heard.indexOf("编辑") >= 0) {
                             startActivity(new Intent(getApplicationContext(), EditInfoActivity.class));
+                        } else if(heard.indexOf("主页")>=0){
+                            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                        } else if(heard.indexOf("下载")>=0){
+                            startActivity(new Intent(getApplicationContext(),DownloadedActivity.class));
+                        } else if (heard.indexOf("我们")>=0){
+                            startActivity(new Intent(getApplicationContext(),AboutUsActivity.class));
                         }
                     }
 
