@@ -78,9 +78,7 @@ public class MainActivity extends Activity {
         init();
         if (isNetworkConnected(getApplicationContext())) {
             noConnectLinearLayout.setVisibility(View.GONE);
-            setAdImageView();
-
-            if (myUser.getSchoolId() != null) {
+            if (myUser.getSchoolId() != null&&sharedPreferences.getInt("AllorSch",0)==1) {
                 if (myUser.getSchoolId().indexOf("1408620") >= 0) {
                     new NewsAsyncTask().execute(softURL);
                     whichClass=20;
@@ -93,6 +91,7 @@ public class MainActivity extends Activity {
                 new NewsAsyncTask().execute(URL);
                 whichClass=0;
             }
+            setAdImageView();
 //            new NewsAsyncTask().execute(softURL);
             refreshListView();
         } else {
@@ -143,6 +142,8 @@ public class MainActivity extends Activity {
         schoolTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                editor.putInt("AllorSch",1);
+                editor.commit();
                 if (bmobUser != null) {
                     if (myUser.getSchoolId() == null) {
                         Utils.toast.show(getApplicationContext(), "请先完成教务系统绑定");
@@ -160,6 +161,8 @@ public class MainActivity extends Activity {
         findViewById(R.id.all_learn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                editor.putInt("AllorSch",0);
+                editor.commit();
                 whichClass=0;
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
@@ -258,15 +261,14 @@ public class MainActivity extends Activity {
                     }
                 });break;
             case 10:
-                tempImageView.setImageResource(R.drawable.computer_ad);
+                adImageView.setImageResource(R.drawable.computer_ad);
                 nextAdButton.setVisibility(View.GONE);
                 break;
             case 20:
-                tempImageView.setImageResource(R.drawable.computer_ad);
+                adImageView.setImageResource(R.drawable.soft_ad);
                 nextAdButton.setVisibility(View.GONE);
                 break;
         }
-
     }
 
     //异步加载课程列表

@@ -40,7 +40,7 @@
             <ImageView
                 android:id="@+id/iv_ad"
                 android:layout_width="match_parent"
-                android:layout_height="212dp"
+                android:layout_height="200dp"
                 android:layout_below="@id/tv_title"
                 android:scaleType="fitXY"
                 android:src="@mipmap/ad" />
@@ -53,7 +53,7 @@
                 android:layout_below="@+id/tv_title"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="5dp"
-                android:layout_marginTop="63dp" />
+                android:layout_marginTop="51dp" />
 
             <!--教学列表-->
             <eiyou.us.text.pullToRefresh.RefreshableView
