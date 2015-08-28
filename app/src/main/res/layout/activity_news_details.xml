@@ -36,15 +36,26 @@
                     android:singleLine="true"
                     android:text="视频播放"
                     android:textColor="@android:color/white"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:id="@+id/textView2" />
                 <ImageView
                     android:id="@+id/iv_download"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
+                    android:layout_height="34dp"
                     android:src="@drawable/download"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true" />
+
+                <Button
+                    android:layout_width="43dp"
+                    android:layout_height="44dp"
+                    android:id="@+id/share"
+                    android:background="@drawable/share"
+                    android:onClick="share"
+                    android:layout_alignBottom="@+id/textView2"
+                    android:layout_toLeftOf="@+id/iv_download"
+                    android:layout_toStartOf="@+id/iv_download" />
             </RelativeLayout>
 
             <TextView
@@ -126,5 +137,22 @@
         android:background="#cdcdcd"
         android:layout_below="@id/rl_video">
     </ListView>
+    <!-- 习题-->
+    <WebView
+        android:id="@+id/wv_exam"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:visibility="gone">
+    </WebView>
+    <Button
+        android:id="@+id/b_finish"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="学完本节"
+        android:background="@drawable/shape"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="39dp"
+        android:visibility="gone"/>
 
 </RelativeLayout>

@@ -8,12 +8,29 @@ public class FileInfo implements Serializable {
 	private String filename;
 	private int length;
 	private int finished;
+	private String videoIcon,videoContent;
+
+	public String getVideoContent() {
+		return videoContent;
+	}
+
+	public void setVideoContent(String videoContent) {
+		this.videoContent = videoContent;
+	}
+
+	public String getVideoIcon() {
+		return videoIcon;
+	}
+
+	public void setVideoIcon(String videoIcon) {
+		this.videoIcon = videoIcon;
+	}
 
 	public FileInfo() {
 		super();
 	}
 
-	public FileInfo(int id, String url, String filename, int length,
+	public FileInfo(int id, String url, String filename,String videoIcon,String videoContent, int length,
 			int finished) {
 		super();
 		this.id = id;

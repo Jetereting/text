@@ -14,12 +14,16 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
@@ -27,6 +31,8 @@ import android.widget.TextView;
 
 import com.baidu.voicerecognition.android.ui.BaiduASRDigitalDialog;
 import com.baidu.voicerecognition.android.ui.DialogRecognitionListener;
+import com.tencent.connect.share.QQShare;
+import com.tencent.tauth.Tencent;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -42,6 +48,7 @@ import eiyou.us.text.communication.CommentBean;
 import eiyou.us.text.download.ShowDownload;
 import eiyou.us.text.download.entities.FileInfo;
 import eiyou.us.text.download.service.DownLoadService;
+import eiyou.us.text.qqShare.BaseUiListener;
 import eiyou.us.text.utils.Utils;
 import eiyou.us.text.video.DensityUtil;
 import eiyou.us.text.video.FullScreenVideoView;
@@ -65,12 +72,11 @@ public class DetailsActivity extends Activity implements View.OnClickListener, M
     private int mCurrentTheme = Config.DIALOG_THEME;
 
 
-
     // 底部View
     private View mBottomView;
     // 视频播放拖动条
     private SeekBar mSeekBar;
-    private ImageView mPlay, fullscreenImageView,mdownload;
+    private ImageView mPlay, fullscreenImageView, mdownload;
     private TextView mPlayTime;
     private TextView mDurationTime, loadRateView;
 
@@ -95,10 +101,17 @@ public class DetailsActivity extends Activity implements View.OnClickListener, M
     private int orginalLight;
     //intent
     Intent intent;
+    String videoNameFromDown;
     //bmob
     BmobQuery<CommentBean> query;
     //download
     FileInfo fileInfo;
+    //qqShare
+    Tencent tencent;
+//    exam
+    WebView examVebView;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +126,13 @@ public class DetailsActivity extends Activity implements View.OnClickListener, M
         fullscreenImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), VideoMainActivity.class).putExtra("videoUrl",videoUrl));
+                ViewGroup.LayoutParams lp;
+                lp = mVideo.getLayoutParams();
+                DisplayMetrics dm = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(dm);
+                lp.height = dm.heightPixels;
+                lp.width = dm.widthPixels;
+                mVideo.setLayoutParams(lp);
             }
         });
         new CommentAsyncTask().execute(query);
@@ -121,7 +140,7 @@ public class DetailsActivity extends Activity implements View.OnClickListener, M
         mdownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utils.toast.show(getApplicationContext(),"正在下载");
+                Utils.toast.show(getApplicationContext(), "正在下载");
                 BroadcastReceiver MyReceiver = new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
@@ -138,14 +157,38 @@ public class DetailsActivity extends Activity implements View.OnClickListener, M
                 startService(intent);
             }
         });
+        findViewById(R.id.share).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                qqShare();
+            }
+        });
+        findViewById(R.id.share).getBackground().setAlpha(200);
+        findViewById(R.id.b_finish).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(),MainActivity.class));
+            }
+        });
     }
 
     private void init() {
         fullscreenImageView = (ImageView) findViewById(R.id.iv_fullscreen);
-        commentListView=(ListView)findViewById(R.id.lv_comment);
-        intent=getIntent();
-        videoUrl=intent.getStringExtra("videoUrl");
-        fileInfo=new FileInfo(0,intent.getStringExtra("videoUrl"),intent.getStringExtra("videoName")+".mp4",0,0);
+        commentListView = (ListView) findViewById(R.id.lv_comment);
+        intent = getIntent();
+        videoUrl = intent.getStringExtra("videoUrl");
+        fileInfo = new FileInfo(0,
+                intent.getStringExtra("videoUrl"),
+                intent.getStringExtra("videoName"),
+                intent.getStringExtra("videoIcon"),
+                intent.getStringExtra("videoContent"),
+                0,
+                0);
+        videoNameFromDown=intent.getStringExtra("videoNameFromDown");
+        tencent = Tencent.createInstance("1104828934", this.getApplicationContext());
+        examVebView=(WebView)findViewById(R.id.wv_exam);
+        examVebView.getSettings().setJavaScriptEnabled(true);
+        examVebView.loadUrl("http://eiyou.us/mooc/exam.html");
     }
 
     private void videoAction() {
@@ -157,7 +200,7 @@ public class DetailsActivity extends Activity implements View.OnClickListener, M
         mSeekBar = (SeekBar) findViewById(R.id.seekbar);
         loadRateView = (TextView) findViewById(R.id.tv_loadRateView);
         mTopView = findViewById(R.id.top_layout);
-        mdownload=(ImageView)findViewById(R.id.iv_download);
+        mdownload = (ImageView) findViewById(R.id.iv_download);
         mBottomView = findViewById(R.id.bottom_layout);
 
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -306,13 +349,22 @@ public class DetailsActivity extends Activity implements View.OnClickListener, M
 
     private void playVideo() {
         //如果已经下载好
-        if(ShowDownload.isExist(Environment.getExternalStorageDirectory()
-                .getAbsolutePath() + "/.us.mooc/",fileInfo.getFilename())){
+        try {
+            if (ShowDownload.isExist(Environment.getExternalStorageDirectory()
+                    .getAbsolutePath() + "/.us.mooc/", fileInfo.getFilename())) {
 
-            mVideo.setVideoPath(Environment.getExternalStorageDirectory()
-                    .getAbsolutePath() + "/.us.mooc/"+fileInfo.getFilename());
-        }else {
-            mVideo.setVideoPath(videoUrl);
+                mVideo.setVideoPath(Environment.getExternalStorageDirectory()
+                        .getAbsolutePath() + "/.us.mooc/" + fileInfo.getFilename());
+            } else {
+                mVideo.setVideoPath(videoUrl);
+            }
+        }catch (Exception e){
+            mVideo.setVideoPath(
+                    Environment.getExternalStorageDirectory()
+                            .getAbsolutePath() + "/.us.mooc/"+videoNameFromDown+".mp4"
+            );
+            Log.e("eee",Environment.getExternalStorageDirectory()
+                    .getAbsolutePath() + "/.us.mooc/"+videoNameFromDown+".mp4");
         }
 
         mVideo.requestFocus();
@@ -346,9 +398,10 @@ public class DetailsActivity extends Activity implements View.OnClickListener, M
                 mPlay.setImageResource(R.drawable.video_btn_down);
                 mPlayTime.setText("00:00");
                 mSeekBar.setProgress(0);
+                examVebView.setVisibility(View.VISIBLE);
+                findViewById(R.id.b_finish).setVisibility(View.VISIBLE);
             }
         });
-        mVideo.setOnTouchListener(mTouchListener);
     }
 
     private Runnable hideRunnable = new Runnable() {
@@ -554,7 +607,8 @@ public class DetailsActivity extends Activity implements View.OnClickListener, M
         }
 
     }
-    class CommentAsyncTask extends AsyncTask<BmobQuery<CommentBean>,Void,List<CommentBean>>{
+
+    class CommentAsyncTask extends AsyncTask<BmobQuery<CommentBean>, Void, List<CommentBean>> {
 
         @Override
         protected List<CommentBean> doInBackground(BmobQuery<CommentBean>... params) {
@@ -563,21 +617,22 @@ public class DetailsActivity extends Activity implements View.OnClickListener, M
 
         @Override
         protected void onPostExecute(List<CommentBean> commentBeanList) {
-            CommentAdapter commentAdapter=new CommentAdapter(getApplicationContext(),commentBeanList);
+            CommentAdapter commentAdapter = new CommentAdapter(getApplicationContext(), commentBeanList);
             commentListView.setAdapter(commentAdapter);
         }
 
         private List<CommentBean> getComment(BmobQuery<CommentBean> query) {
-            List<CommentBean> commentBeanList=new ArrayList<>();
-            CommentBean commentBean=new CommentBean(R.drawable.user_avatar,"jeoook","蟹壳！","12:34");
+            List<CommentBean> commentBeanList = new ArrayList<>();
+            CommentBean commentBean = new CommentBean(R.drawable.user_avatar, "jeoook", "蟹壳！", "12:34");
 
-            query=new BmobQuery<>();
-            for(int i=0;i<10;i++) {
+            query = new BmobQuery<>();
+            for (int i = 0; i < 10; i++) {
                 commentBeanList.add(commentBean);
             }
             return commentBeanList;
         }
     }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
@@ -595,12 +650,12 @@ public class DetailsActivity extends Activity implements View.OnClickListener, M
                             startActivity(new Intent(getApplicationContext(), UserInfoActivity.class));
                         } else if (heard.indexOf("编辑") >= 0) {
                             startActivity(new Intent(getApplicationContext(), EditInfoActivity.class));
-                        } else if(heard.indexOf("主页")>=0){
-                            startActivity(new Intent(getApplicationContext(),MainActivity.class));
-                        } else if(heard.indexOf("下载")>=0){
-                            startActivity(new Intent(getApplicationContext(),DownloadedActivity.class));
-                        } else if (heard.indexOf("我们")>=0){
-                            startActivity(new Intent(getApplicationContext(),AboutUsActivity.class));
+                        } else if (heard.indexOf("主页") >= 0) {
+                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        } else if (heard.indexOf("下载") >= 0) {
+                            startActivity(new Intent(getApplicationContext(), DownloadedActivity.class));
+                        } else if (heard.indexOf("我们") >= 0) {
+                            startActivity(new Intent(getApplicationContext(), AboutUsActivity.class));
                         }
                     }
 
@@ -630,4 +685,18 @@ public class DetailsActivity extends Activity implements View.OnClickListener, M
         }
         return true;
     }
+
+    //    qq share
+    private void qqShare() {
+        final Bundle params = new Bundle();
+        params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
+        params.putString(QQShare.SHARE_TO_QQ_TITLE, fileInfo.getFilename());
+        params.putString(QQShare.SHARE_TO_QQ_SUMMARY, fileInfo.getVideoContent());
+        params.putString(QQShare.SHARE_TO_QQ_TARGET_URL,  fileInfo.getUrl());
+        params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL,"http://eiyou.us/mooc/pic/icon.png");
+        params.putString(QQShare.SHARE_TO_QQ_APP_NAME, "us.mooc");
+        tencent.shareToQQ(DetailsActivity.this, params, new BaseUiListener());
+    }
+
+
 }

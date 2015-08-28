@@ -1,32 +1,30 @@
 package eiyou.us.text;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.baidu.voicerecognition.android.ui.BaiduASRDigitalDialog;
 import com.baidu.voicerecognition.android.ui.DialogRecognitionListener;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import eiyou.us.text.download.ShowDownload;
+import eiyou.us.text.download.ViewHolder;
 import eiyou.us.text.utils.Utils;
 import eiyou.us.text.yuyin.Config;
 import eiyou.us.text.yuyin.Constants;
@@ -36,6 +34,7 @@ public class DownloadedActivity extends Activity {
     ShowDownload showDownload;
     List<String> list,pathList;
     String videoPath;
+    MyAdapter adapter;
     //语音
     private BaiduASRDigitalDialog mDialog = null;
     private DialogRecognitionListener mRecognitionListener;
@@ -56,14 +55,14 @@ public class DownloadedActivity extends Activity {
         list=showDownload.show(videoPath);
         pathList=showDownload.showPath(videoPath);
         //listView添加适配器
-        MyAdapter adapter=new MyAdapter();
+        adapter=new MyAdapter();
         listView.setAdapter(adapter);
 
         //返回
         findViewById(R.id.tv_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                startActivity(new Intent(getApplicationContext(),MainActivity.class));
             }
         });
     }
@@ -115,22 +114,41 @@ public class DownloadedActivity extends Activity {
                 @Override
                 public void onClick(View position) {
                     videoPath = pathList.get(tempPosition);
-                    startActivity(new Intent(Intent.ACTION_VIEW).setDataAndType(Uri.parse(videoPath),"video/mp4"));
+                    startActivity(new Intent(getApplicationContext(),DetailsActivity.class).putExtra("videoPath",videoPath));
                 }
             });
+            final ViewHolder finalViewHolder = viewHolder;
             viewHolder.textView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    Utils.toast.show(getApplicationContext(),"想删除他？可以到.us.mooc目录删除哦");
+                    new AlertDialog.Builder(DownloadedActivity.this).setTitle("确认删除？")
+                            .setIcon(android.R.drawable.ic_dialog_info)
+                            .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //执行删除操作
+                                    File file=new File(Environment.getExternalStorageDirectory()
+                                            .getAbsolutePath() + "/.us.mooc/"+ finalViewHolder.textView.getText().toString());
+                                    if(file.exists()){
+                                        file.delete();
+                                    }
+//                                    startActivity(new Intent(getApplicationContext(),DetailsActivity.class).putExtra("videoName1",finalViewHolder.textView.getText().toString()));
+                                    startActivity(new Intent(getApplicationContext(),DetailsActivity.class).putExtra("videoNameFromDown","aaaaaaaaaaaaaaaaaaaaaaaaaaa"));
+                                }
+                            })
+                            .setNegativeButton("否", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            }).show();
                     return true;
                 }
             });
             return convertView;
         }
     }
-    class ViewHolder{
-        TextView textView;
-    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_MENU) {

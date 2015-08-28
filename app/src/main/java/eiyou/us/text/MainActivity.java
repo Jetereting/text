@@ -34,6 +34,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobUser;
@@ -65,7 +67,7 @@ public class MainActivity extends Activity {
     private int mCurrentTheme = Config.DIALOG_THEME;
 
     private Intent intent;
-    int whichClass=0;
+    int whichClass = 0;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     BmobUser bmobUser;
@@ -77,27 +79,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         isLogin();
         init();
-        if (isNetworkConnected(getApplicationContext())) {
-            noConnectLinearLayout.setVisibility(View.GONE);
-            if (myUser.getSchoolId() != null&&sharedPreferences.getInt("AllorSch",0)==1) {
-                if (myUser.getSchoolId().indexOf("1408620") >= 0) {
-                    new NewsAsyncTask().execute(softURL);
-                    whichClass=20;
-                }
-                if (myUser.getSchoolId().indexOf("1408610") >= 0) {
-                    new NewsAsyncTask().execute(computerURl);
-                    whichClass=10;
-                }
-            } else {
-                new NewsAsyncTask().execute(URL);
-                whichClass=0;
-            }
-            setAdImageView();
-//            new NewsAsyncTask().execute(softURL);
-            refreshListView();
-        } else {
-            noConnectLinearLayout.setVisibility(View.VISIBLE);
-        }
+        doSomethingJudgeNetwork();
         event();
     }
 
@@ -111,6 +93,33 @@ public class MainActivity extends Activity {
             }
         }
         return false;
+    }
+
+    public void doSomethingJudgeNetwork() {
+        if (isNetworkConnected(getApplicationContext())) {
+            noConnectLinearLayout.setVisibility(View.GONE);
+            if (myUser != null) {
+                if (myUser.getSchoolId() != null && sharedPreferences.getInt("AllorSch", 0) == 1) {
+                    if (myUser.getSchoolId().indexOf("1408620") >= 0) {
+                        new NewsAsyncTask().execute(softURL);
+                        whichClass = 20;
+                    }
+                    if (myUser.getSchoolId().indexOf("1408610") >= 0) {
+                        new NewsAsyncTask().execute(computerURl);
+                        whichClass = 10;
+                    }
+                } else {
+                    new NewsAsyncTask().execute(URL);
+                    whichClass = 0;
+                }
+            }
+            setAdImageView();
+//            new NewsAsyncTask().execute(softURL);
+            refreshListView();
+        } else {
+            noConnectLinearLayout.setVisibility(View.VISIBLE);
+        }
+
     }
 
     private void isLogin() {
@@ -143,7 +152,7 @@ public class MainActivity extends Activity {
         schoolTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editor.putInt("AllorSch",1);
+                editor.putInt("AllorSch", 1);
                 editor.commit();
                 if (bmobUser != null) {
                     if (myUser.getSchoolId() == null) {
@@ -162,9 +171,9 @@ public class MainActivity extends Activity {
         findViewById(R.id.all_learn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editor.putInt("AllorSch",0);
+                editor.putInt("AllorSch", 0);
                 editor.commit();
-                whichClass=0;
+                whichClass = 0;
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
         });
@@ -260,7 +269,8 @@ public class MainActivity extends Activity {
                             Utils.sharedPreferences.putInt(getApplicationContext(), "which_ad", 0);
                         }
                     }
-                });break;
+                });
+                break;
             case 10:
                 adImageView.setImageResource(R.drawable.computer_ad);
                 nextAdButton.setVisibility(View.GONE);
@@ -386,12 +396,12 @@ public class MainActivity extends Activity {
                             startActivity(new Intent(getApplicationContext(), UserInfoActivity.class));
                         } else if (heard.indexOf("编辑") >= 0) {
                             startActivity(new Intent(getApplicationContext(), EditInfoActivity.class));
-                        } else if(heard.indexOf("主页")>=0){
-                            startActivity(new Intent(getApplicationContext(),MainActivity.class));
-                        } else if(heard.indexOf("下载")>=0){
-                            startActivity(new Intent(getApplicationContext(),DownloadedActivity.class));
-                        } else if (heard.indexOf("我们")>=0){
-                            startActivity(new Intent(getApplicationContext(),AboutUsActivity.class));
+                        } else if (heard.indexOf("主页") >= 0) {
+                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        } else if (heard.indexOf("下载") >= 0) {
+                            startActivity(new Intent(getApplicationContext(), DownloadedActivity.class));
+                        } else if (heard.indexOf("我们") >= 0) {
+                            startActivity(new Intent(getApplicationContext(), AboutUsActivity.class));
                         }
                     }
 
@@ -483,7 +493,7 @@ public class MainActivity extends Activity {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             //异步加载图片
-            viewHolder.ivIcon.setImageResource(R.mipmap.ic_launcher);
+            viewHolder.ivIcon.setImageResource(R.drawable.load);
             String iconUrl = list.get(position).newsIconUrl;
             viewHolder.ivIcon.setTag(iconUrl);
             imageLoader.showImageByAsyncTask(viewHolder.ivIcon, iconUrl);
@@ -506,7 +516,14 @@ public class MainActivity extends Activity {
                 public void onClick(View position) {
                     videoName = list.get(tempPosition).newsTitle;
                     videoUrl = list.get(tempPosition).videoUrl;
-                    startActivity(new Intent(getApplicationContext(), DetailsActivity.class).putExtra("videoUrl", videoUrl).putExtra("videoName", videoName));
+                    String videoContent=list.get(tempPosition).newsContent;
+                    String videoIcon=list.get(tempPosition).newsIconUrl;
+//                    Log.e("icon",videoIcon);
+                    startActivity(new Intent(getApplicationContext(), DetailsActivity.class).
+                            putExtra("videoUrl", videoUrl).
+                            putExtra("videoName", videoName).
+                            putExtra("videoContent",videoContent).
+                            putExtra("videoIcon",videoIcon));
                 }
             });
             return convertView;
@@ -518,6 +535,9 @@ public class MainActivity extends Activity {
             public LinearLayout linearLayout;
         }
     }
+
+    //判断网络情况
+
 
     public void onDestroy() {
         listView.setAdapter(null);
