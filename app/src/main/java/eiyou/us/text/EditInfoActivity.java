@@ -2,6 +2,7 @@ package eiyou.us.text;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -88,7 +89,13 @@ public class EditInfoActivity extends Activity {
         userMailEditText=(EditText)findViewById(R.id.ed_user_mail);
         myUser=new MyUser();
         bmobUser=BmobUser.getCurrentUser(this);
+        myUser=BmobUser.getCurrentUser(this,MyUser.class);
+        userInstructionEditText.setText(myUser.getInstruction());
+        userHobbyEditText.setText(myUser.getHobby());
+        userTelEditText.setText(myUser.getMobilePhoneNumber());
+        userMailEditText.setText(myUser.getEmail());
     }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_MENU) {

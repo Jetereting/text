@@ -104,7 +104,7 @@
             android:textColor="#000000"
             android:background="#FFFFFF"
             android:gravity="center_vertical"
-            android:text="   ☏    178-xxxx-xxxx"
+            android:text="   电话：    178-xxxx-xxxx"
             android:textSize="22dp"/>
         <TextView
             android:layout_below="@+id/dianhua"
@@ -115,7 +115,7 @@
             android:textColor="#000000"
             android:background="#FFFFFF"
             android:gravity="center_vertical"
-            android:text="   ✉     ziweiqiao@qq.com"
+            android:text="   网站：    eiyou.us"
             android:textSize="22dp"/>
 
     </RelativeLayout>

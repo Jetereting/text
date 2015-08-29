@@ -14,16 +14,13 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
@@ -126,13 +123,7 @@ public class DetailsActivity extends Activity implements View.OnClickListener, M
         fullscreenImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ViewGroup.LayoutParams lp;
-                lp = mVideo.getLayoutParams();
-                DisplayMetrics dm = new DisplayMetrics();
-                getWindowManager().getDefaultDisplay().getMetrics(dm);
-                lp.height = dm.heightPixels;
-                lp.width = dm.widthPixels;
-                mVideo.setLayoutParams(lp);
+                startActivity(new Intent(getApplicationContext(), VideoMainActivity.class).putExtra("videoUrl", videoUrl));
             }
         });
         new CommentAsyncTask().execute(query);

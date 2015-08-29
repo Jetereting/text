@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<eiyou.us.text.screenAdaptation.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -13,7 +14,7 @@
 
         <!--主界面-->
 
-        <RelativeLayout
+        <eiyou.us.text.screenAdaptation.PercentRelativeLayout
             android:id="@+id/layout11"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -49,11 +50,13 @@
                 android:id="@+id/b_next_ad"
                 android:layout_width="50dp"
                 android:layout_height="117dp"
+                app:layout_widthPercent="12%w"
+                app:layout_heightPercent="29%w"
                 android:background="@drawable/right_arrow1"
                 android:layout_below="@+id/tv_title"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="5dp"
-                android:layout_marginTop="51dp" />
+                app:layout_marginRightPercent="3%w"
+                app:layout_marginTopPercent="9%h" />
 
             <!--教学列表-->
             <eiyou.us.text.pullToRefresh.RefreshableView
@@ -94,8 +97,8 @@
                     android:textColor="#adadad"/>
             </LinearLayout>
 
-        </RelativeLayout>
+        </eiyou.us.text.screenAdaptation.PercentRelativeLayout>
 
     </android.support.v4.widget.SlidingPaneLayout>
 
-</LinearLayout>
+</eiyou.us.text.screenAdaptation.PercentRelativeLayout>

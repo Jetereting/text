@@ -1,5 +1,6 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<eiyou.us.text.screenAdaptation.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="eiyou.us.text.UserInfoActivity">
@@ -143,27 +144,29 @@
                 android:textSize="20dp"
                 android:textColor="#ff373737"
                 android:layout_margin="15dp"
-                />
+                android:id="@+id/textView3" />
 
-            <RelativeLayout
+            <eiyou.us.text.screenAdaptation.PercentRelativeLayout
                 android:id="@+id/back"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="55dp"
                 android:background="@drawable/button_back"
                 android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true">
+                android:layout_alignParentLeft="true"
+                android:layout_margin="5dp"
+                android:layout_alignParentStart="true">
                 <TextView
                     android:id="@+id/tv_button_back"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="24dp"
+                    android:textSize="22dp"
                     android:text="退出账号"
                     android:textColor="#e3e8e9"
                     android:gravity="center_horizontal"
                     android:layout_centerVertical="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true" />
-            </RelativeLayout>
+                    />
+            </eiyou.us.text.screenAdaptation.PercentRelativeLayout>
         </RelativeLayout>
     </RelativeLayout>
-</RelativeLayout>
+</eiyou.us.text.screenAdaptation.PercentRelativeLayout>

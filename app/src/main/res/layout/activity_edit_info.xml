@@ -117,7 +117,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="    爱好:     "
+            android:text="    爱好:    "
             android:textColor="#2dff02"
             android:textSize="20dp" />
         <EditText
