@@ -40,8 +40,9 @@
                 android:id="@+id/tv_user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/iv_user_avatar"
                 android:lines="1"
-                android:text="用户名:"
+                android:text="    用户名:"
                 android:textSize="20dp"
                 android:textColor="#ffffffff"
                 android:layout_centerVertical="true"
@@ -148,13 +149,12 @@
 
             <eiyou.us.text.screenAdaptation.PercentRelativeLayout
                 android:id="@+id/back"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_width="340dp"
+                android:layout_height="47dp"
                 android:background="@drawable/button_back"
+                android:layout_marginBottom="12dp"
                 android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_margin="5dp"
-                android:layout_alignParentStart="true">
+                android:layout_centerHorizontal="true">
                 <TextView
                     android:id="@+id/tv_button_back"
                     android:layout_width="match_parent"

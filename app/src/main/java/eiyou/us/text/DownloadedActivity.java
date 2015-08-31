@@ -110,11 +110,14 @@ public class DownloadedActivity extends Activity {
 
             //相应视频点击事件
             final int tempPosition = position;
+            final ViewHolder finalViewHolder1 = viewHolder;
             viewHolder.textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View position) {
                     videoPath = pathList.get(tempPosition);
-                    startActivity(new Intent(getApplicationContext(),DetailsActivity.class).putExtra("videoPath",videoPath));
+                    startActivity(new Intent(Intent.ACTION_VIEW).setDataAndType(Uri.parse(videoPath),"video/mp4"));
+//                    startActivity(new Intent(getApplicationContext(),DetailsActivity.class).putExtra("videoNameFromDown", finalViewHolder1.textView.getText().toString()));
+
                 }
             });
             final ViewHolder finalViewHolder = viewHolder;
@@ -132,8 +135,7 @@ public class DownloadedActivity extends Activity {
                                     if(file.exists()){
                                         file.delete();
                                     }
-//                                    startActivity(new Intent(getApplicationContext(),DetailsActivity.class).putExtra("videoName1",finalViewHolder.textView.getText().toString()));
-                                    startActivity(new Intent(getApplicationContext(),DetailsActivity.class).putExtra("videoNameFromDown","aaaaaaaaaaaaaaaaaaaaaaaaaaa"));
+                                    startActivity(new Intent(getApplicationContext(),DownloadedActivity.class));
                                 }
                             })
                             .setNegativeButton("否", new DialogInterface.OnClickListener() {

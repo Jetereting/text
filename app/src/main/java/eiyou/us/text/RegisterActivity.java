@@ -72,9 +72,10 @@ public class RegisterActivity extends Activity {
             @Override
             public void onSuccess() {
                 // TODO Auto-generated method stub
-                Utils.toast.show(getApplicationContext(),"注册成功:" + myUser.getUsername() + "-"
-                        + myUser.getObjectId() + "-" + myUser.getCreatedAt()
-                        + "-" + myUser.getSessionToken() + ",是否验证：" + myUser.getEmailVerified());
+//                Utils.toast.show(getApplicationContext(),"注册成功:" + myUser.getUsername() + "-"
+//                        + myUser.getObjectId() + "-" + myUser.getCreatedAt()
+//                        + "-" + myUser.getSessionToken() + ",是否验证：" + myUser.getEmailVerified());
+                Utils.toast.show(getApplicationContext(),"注册成功");
 
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             }

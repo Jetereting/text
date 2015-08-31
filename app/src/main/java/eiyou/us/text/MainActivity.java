@@ -28,6 +28,7 @@ import com.baidu.voicerecognition.android.ui.DialogRecognitionListener;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.net.URL;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -39,8 +40,11 @@ import java.util.logging.LogRecord;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobFile;
+import cn.bmob.v3.listener.SaveListener;
 import eiyou.us.text.communication.MyUser;
 import eiyou.us.text.image.ImageLoader;
+import eiyou.us.text.news.BmobNews;
 import eiyou.us.text.news.NewsBean;
 import eiyou.us.text.pullToRefresh.RefreshableView;
 import eiyou.us.text.utils.Utils;
@@ -313,27 +317,25 @@ public class MainActivity extends Activity {
                 newsBean.newsIconUrl = jsonObject.getString("picSmall");
                 newsBean.newsTitle = jsonObject.getString("title");
                 newsBean.newsContent = jsonObject.getString("content");
-                newsBean.videoUrl = jsonObject.getString("video");
+                newsBean.newsVideoUrl = jsonObject.getString("video");
                 newsBeanList.add(newsBean);
 
                 //bmob
-//                BmobNews bmobNews = new BmobNews();
-//                bmobNews.setNewsIcon(new BmobFile(new File(newsBean.newsIconUrl)));
-//                bmobNews.setNewsIcon();
-//                bmobNews.setNewsTitle(newsBean.newsTitle);
-//                bmobNews.setNewsContent(newsBean.newsContent);
-//                bmobNews.setNewsVideoUrl(newsBean.newsContent);
-//                bmobNews.save(getApplicationContext(), new SaveListener() {
-//                    @Override
-//                    public void onSuccess() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onFailure(int i, String s) {
-//                        Log.e("ee", s);
-//                    }
-//                });
+                BmobNews bmobNews = new BmobNews();
+                bmobNews.setNewsTitle(newsBean.newsTitle);
+                bmobNews.setNewsContent(newsBean.newsContent);
+                bmobNews.setNewsVideoUrl(newsBean.newsVideoUrl);
+                bmobNews.save(getApplicationContext(), new SaveListener() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onFailure(int i, String s) {
+                        Log.e("ee", s);
+                    }
+                });
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -498,14 +500,6 @@ public class MainActivity extends Activity {
             viewHolder.ivIcon.setTag(iconUrl);
             imageLoader.showImageByAsyncTask(viewHolder.ivIcon, iconUrl);
 
-            //bmob
-//            BmobNews bmobNews=new BmobNews();
-//            bmobNews.setNewsIcon(new BmobFile(new File(list.get(position).newsIconUrl)));
-//            bmobNews.setNewsTitle(list.get(position).newsTitle);
-//            bmobNews.setNewsContent(list.get(position).newsContent);
-//            bmobNews.setNewsVideoUrl(list.get(position).videoUrl);
-//            bmobNews.save(getApplicationContext());
-
             viewHolder.tvTitle.setText(list.get(position).newsTitle);
             viewHolder.tvContent.setText(list.get(position).newsContent);
 
@@ -515,7 +509,7 @@ public class MainActivity extends Activity {
                 @Override
                 public void onClick(View position) {
                     videoName = list.get(tempPosition).newsTitle;
-                    videoUrl = list.get(tempPosition).videoUrl;
+                    videoUrl = list.get(tempPosition).newsVideoUrl;
                     String videoContent=list.get(tempPosition).newsContent;
                     String videoIcon=list.get(tempPosition).newsIconUrl;
 //                    Log.e("icon",videoIcon);
@@ -535,8 +529,6 @@ public class MainActivity extends Activity {
             public LinearLayout linearLayout;
         }
     }
-
-    //判断网络情况
 
 
     public void onDestroy() {
